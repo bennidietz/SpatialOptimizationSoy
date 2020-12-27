@@ -12,6 +12,34 @@ landuse_original = plt.imread(default_directory + "/mt_2017_v3_1_reprojection.ti
 
 # plot original landuse map
 f1, ax1 = plt.subplots(1)
+cmap1 = ListedColormap(["#b3cc33","#be94e8","#10773e","#eeefce","#e4a540","#a4507d","#c948a2","#be5b1d", "#f09cde","#877712","#614040","#1b5ee4", "#0cf8c1","#00000000","#00000000"])
+legend_landuse1 = [
+        mpatches.Patch(color="#be94e8", label = 'Fallow/cotton'),
+        mpatches.Patch(color="#10773e",label = 'Forest'),
+        mpatches.Patch(color="#eeefce",label = 'Pasture'),
+        mpatches.Patch(color="#e4a540",label = 'Soy/corn'),
+        mpatches.Patch(color="#a4507d",label = 'Soy/cotton'),
+        mpatches.Patch(color="#c948a2",label = 'Soy/fallow'),
+        mpatches.Patch(color="#be5b1d",label = 'Soy/millet'),
+        mpatches.Patch(color="#f09cde",label = 'Soy/sunflower'),
+        mpatches.Patch(color="#877712",label = 'Sugarcane'),
+        mpatches.Patch(color="#614040",label = 'Urban area'),
+        mpatches.Patch(color="#1b5ee4",label = 'Water'),
+        mpatches.Patch(color="#0cf8c1",label = 'Secondary veg.'),
+        mpatches.Patch(color="#00000000",label = 'No data')
+]
+
+ax1.set_title('Landuse map original')
+ax1.set_xlabel('Column #')
+ax1.set_ylabel('Row #')
+ax1.legend(handles=legend_landuse1,bbox_to_anchor=(1.05,1), loc=2,
+    borderaxespad=0.)
+plt.imsave(default_directory +
+    "/MatoGrosso_2017_original.tif",
+    landuse_original,format='tiff',cmap=cmap1)
+
+# plot reclassified landuse map
+f1, ax1 = plt.subplots(1)
 cmap1 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e", "#000000"])
 legend_landuse1 = [
         mpatches.Patch(color="#b3cc33",label = 'Soy'),
@@ -55,19 +83,29 @@ im1 = plt.imshow(landuse_reclass,interpolation='none',
     cmap=cmap2, vmin = 0.5, vmax = 10.5)
 plt.imsave(default_directory + "/reclass.tiff", landuse_reclass, format = "tiff", cmap = cmap2)
 
-""" 
+
 ax1.set_title('Landuse map original')
 ax1.set_xlabel('Column #')
 ax1.set_ylabel('Row #')
 ax1.legend(handles=legend_landuse2,bbox_to_anchor=(1.05,1), loc=2,
     borderaxespad=0.)
 plt.imsave(default_directory +
-    "/Landuse_maps/MatoGrosso_2017_original.tif",
+    "/MatoGrosso_2017_reclass.tif",
     landuse_reclass,format='tiff',cmap=cmap2)
 #plt.show()
 
-landuse_clipped = landuse_reclass[2800:2900,1700:1800]
-np.save(default_directory + "/Landuse_maps/landuse_map_in.npy",landuse_clipped)
+
+''''landuse_clipped = landuse_reclass[0:500,0:500]
+plt.imsave(default_directory +
+    "/MatoGrosso_2017_clipped.tif",
+    landuse_clipped,format='tiff')
+plt.show()
+
+np.save(default_directory + "/MatoGrosso_2017_clipped.npy",landuse_clipped)
+img_reclass = plt.imshow(landuse_clipped, interpolation = "none", cmap = cmap2, vmin = 0.5, vmax = 10.5)
+plt.show()''''
+
+"""
 # read potential yield maps from asc file
 sugarcane_pot_yield = np.loadtxt(default_directory +
     "/Objectives/sugarcane_new.asc", 
