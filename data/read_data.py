@@ -101,27 +101,24 @@ np.save(default_directory + "/landuse_map_in_cerrado.npy",cerrado_crop)
 
 plt.show()
 
-'''print(type(landuse_reclass))
-landuse_clipped = landuse_reclass[0:500,0:500]
-print(type(landuse_clipped))
+soy_pot_yield_amazon = np.loadtxt(default_directory + 
+    "/soy_new.asc", 
+    skiprows=6)[900:1500,600:1600]
+
+with open(default_directory + "/soy_potential_yield_amazon.pkl", 'wb') as output:
+    pickle.dump(soy_pot_yield_amazon, output, pickle.HIGHEST_PROTOCOL)
+
+soy_pot_yield_cerrado = np.loadtxt(default_directory + 
+    "/soy_new.asc", 
+    skiprows=6)[3700:4300,4000:5000]
+
+with open(default_directory + "/soy_potential_yield_cerrado.pkl", 'wb') as output:
+    pickle.dump(soy_pot_yield_cerrado, output, pickle.HIGHEST_PROTOCOL)
+
 '''
-''''
-plt.imsave(default_directory +
-    "/MatoGrosso_2017_clipped.tif",
-    landuse_clipped,format='tiff')
-plt.show()
-
-np.save(default_directory + "/MatoGrosso_2017_clipped.npy",landuse_clipped)
-img_reclass = plt.imshow(landuse_clipped, interpolation = "none", cmap = cmap2, vmin = 0.5, vmax = 10.5)
-plt.show()'''
-
-"""
 # read potential yield maps from asc file
 sugarcane_pot_yield = np.loadtxt(default_directory +
     "/Objectives/sugarcane_new.asc", 
-    skiprows=6)[2800:2900,1700:1800]
-soy_pot_yield = np.loadtxt(default_directory + 
-    "/Objectives/soy_new.asc", 
     skiprows=6)[2800:2900,1700:1800]
 cotton_pot_yield = np.loadtxt(default_directory + 
     "/Objectives/cotton_new.asc",
@@ -141,4 +138,4 @@ with open(default_directory + "/Objectives/pasture_potential_yield_example.pkl",
     pickle.dump(pasture_pot_yield, output, pickle.HIGHEST_PROTOCOL)
 
 plt.imshow(default_directory + "/Objectives/soy_potential_yield_example.pkl",interpolation='none',
-    cmap=cmap2, vmin = 0.5, vmax = 10.5) """
+    cmap=cmap2, vmin = 0.5, vmax = 10.5) '''
