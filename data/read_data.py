@@ -28,7 +28,8 @@ legend_landuse1 = [
         mpatches.Patch(color="#0cf8c1",label = 'Secondary veg.'),
         mpatches.Patch(color="#00000000",label = 'No data')
 ]
-
+im1 = plt.imshow(landuse_original,interpolation='none',
+cmap=cmap1,vmin = 0.5, vmax = 15.5)
 ax1.set_title('Landuse map original')
 ax1.set_xlabel('Column #')
 ax1.set_ylabel('Row #')
@@ -39,14 +40,22 @@ plt.imsave(default_directory +
     landuse_original,format='tiff',cmap=cmap1)
 
 # plot reclassified landuse map
-f1, ax1 = plt.subplots(1)
-cmap1 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e", "#000000"])
-legend_landuse1 = [
+f2, ax2 = plt.subplots(1)
+cmap2 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e", "#000000"])
+legend_landuse2 = [
         mpatches.Patch(color="#b3cc33",label = 'Soy'),
         mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
         mpatches.Patch(color="#1b5ee4",label = 'Water'),
         mpatches.Patch(color="#10773e",label = 'Not soy'),
         mpatches.Patch(color="#000000",label = 'No data')
+]
+
+cmap3 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e"])
+legend_landuse3 = [
+        mpatches.Patch(color="#b3cc33",label = 'Soy'),
+        mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
+        mpatches.Patch(color="#1b5ee4",label = 'Water'),
+        mpatches.Patch(color="#10773e",label = 'Not soy')
 ]
 
 # create empty map
@@ -69,33 +78,30 @@ landuse_reclass[landuse_original == 12] = 3
 landuse_reclass[landuse_original == 13] = 4
 landuse_reclass[landuse_original == 15] = 5
 
-f2, ax2 = plt.subplots(1)
-cmap2 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e", "#000000"])
-legend_landuse2 = [
-    mpatches.Patch(color="#b3cc33",label = 'Soy'),
-        mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
-        mpatches.Patch(color="#1b5ee4",label = 'Water'),
-        mpatches.Patch(color="#10773e",label = 'Not soy'),
-        mpatches.Patch(color="#000000",label = 'No data')
-]
-
-im1 = plt.imshow(landuse_reclass,interpolation='none',
-    cmap=cmap2, vmin = 0.5, vmax = 10.5)
-plt.imsave(default_directory + "/reclass.tiff", landuse_reclass, format = "tiff", cmap = cmap2)
-
-
-ax1.set_title('Landuse map original')
-ax1.set_xlabel('Column #')
-ax1.set_ylabel('Row #')
-ax1.legend(handles=legend_landuse2,bbox_to_anchor=(1.05,1), loc=2,
+im1 = plt.imshow(landuse_original,interpolation='none',
+cmap=cmap2,vmin = 0.5, vmax = 15.5)
+ax2.set_title('Landuse map reclassified')
+ax2.set_xlabel('Column #')
+ax2.set_ylabel('Row #')
+ax2.legend(handles=legend_landuse3,bbox_to_anchor=(1.05,1), loc=2,
     borderaxespad=0.)
+plt.imsave(default_directory + "/MatoGrosso_2017_reclass.tif", landuse_reclass, format = "tiff", cmap = cmap2)
+
 plt.imsave(default_directory +
-    "/MatoGrosso_2017_reclass.tif",
-    landuse_reclass,format='tiff',cmap=cmap2)
-#plt.show()
+    "/Reclassified_Crop_Amazon.tif",
+    landuse_reclass[900:1500,600:1600],format='tiff',cmap=cmap3)
 
+plt.imsave(default_directory +
+    "/Reclassified_Crop_Cerrado.tif",
+    landuse_reclass[3700:4300,4000:5000],format='tiff',cmap=cmap3)
 
-''''landuse_clipped = landuse_reclass[0:500,0:500]
+plt.show()
+
+'''print(type(landuse_reclass))
+landuse_clipped = landuse_reclass[0:500,0:500]
+print(type(landuse_clipped))
+'''
+''''
 plt.imsave(default_directory +
     "/MatoGrosso_2017_clipped.tif",
     landuse_clipped,format='tiff')
@@ -103,7 +109,7 @@ plt.show()
 
 np.save(default_directory + "/MatoGrosso_2017_clipped.npy",landuse_clipped)
 img_reclass = plt.imshow(landuse_clipped, interpolation = "none", cmap = cmap2, vmin = 0.5, vmax = 10.5)
-plt.show()''''
+plt.show()'''
 
 """
 # read potential yield maps from asc file
