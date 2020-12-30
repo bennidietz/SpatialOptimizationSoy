@@ -87,13 +87,17 @@ ax2.legend(handles=legend_landuse3,bbox_to_anchor=(1.05,1), loc=2,
     borderaxespad=0.)
 plt.imsave(default_directory + "/MatoGrosso_2017_reclass.tif", landuse_reclass, format = "tiff", cmap = cmap2)
 
+amazon_crop = landuse_reclass[900:1500,600:1600]
 plt.imsave(default_directory +
     "/Reclassified_Crop_Amazon.tif",
-    landuse_reclass[900:1500,600:1600],format='tiff',cmap=cmap3)
+    amazon_crop,format='tiff',cmap=cmap3)
+np.save(default_directory + "/landuse_map_in_amazon.npy",amazon_crop)
 
+cerrado_crop = landuse_reclass[3700:4300,4000:5000]
 plt.imsave(default_directory +
     "/Reclassified_Crop_Cerrado.tif",
-    landuse_reclass[3700:4300,4000:5000],format='tiff',cmap=cmap3)
+    cerrado_crop,format='tiff',cmap=cmap3)
+np.save(default_directory + "/landuse_map_in_cerrado.npy",cerrado_crop)
 
 plt.show()
 
