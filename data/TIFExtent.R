@@ -9,6 +9,7 @@ install.packages("netcdf4")
 library(raster)
 library(rstudioapi)
 library(netcdf4)
+library(leaflet)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 landuse_map = raster("mt_2017_v3_1_reprojection.tif")
@@ -40,3 +41,8 @@ bbox_amazon = c(amazon_topLeft, amazon_bottomRight)
 cerrado_topLeft = getAbsoulteCoordinates(4000, 3700)
 cerrado_bottomRight = getAbsoulteCoordinates(5000, 4300)
 bbox_cerrado = c(cerrado_topLeft, cerrado_bottomRight)
+
+
+leaflet() %>% addTiles() %>%
+  addMarkers(c(bbox_amazon[1],bbox_amazon[3],bbox_cerrado[1],bbox_cerrado[3]),
+             c(bbox_amazon[2],bbox_amazon[4],bbox_cerrado[2],bbox_cerrado[4]), popup = "~htmlEscape(Name)")
