@@ -5,6 +5,8 @@ data/soy_new.asc
 
 data/reclass.tiff
 
+data/prec_monthly_UT_Brazil_v2_198001_201312.nc
+
 data/mt_2017_v3_1_reprojection.tif
 
 data/MatoGrosso_2017_original.tif
@@ -14,3 +16,5 @@ data/MatoGrosso_2017_reclass.tif
 data/Reclassified_Crop_Amazon.tif
 
 data/Reclassified_Crop_Cerrado.tif
+
+data/tmin_tmax_Avery.mat
