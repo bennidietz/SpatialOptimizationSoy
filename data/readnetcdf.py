@@ -1,5 +1,6 @@
 #https://unidata.github.io/netcdf4-python/netCDF4/index.html
 #https://stackoverflow.com/questions/29135885/netcdf4-extract-for-subset-of-lat-lon
+#https://utexas.app.box.com/v/Xavier-etal-IJOC-DATA/folder/40983701074
 
 from netCDF4 import Dataset
 import numpy as np
