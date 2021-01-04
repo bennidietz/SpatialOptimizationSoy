@@ -68,19 +68,19 @@ if os.path.isfile(settings.get_file_landuse()):
         cols = landuse_original.shape[1]
         landuse_reclass = np.zeros((rows,cols),dtype= 'uint8')
         # reclassify landuse map: 1 = soy; 2 = urban area; 3 = water; 4 = not soy; 5 = no data
-        landuse_reclass[landuse_original == 1] = 4 # cerrado -> not soy
-        landuse_reclass[landuse_original == 2] = 4 # fallow/cotton -> not soy
-        landuse_reclass[landuse_original == 3] = 4 # forest -> not soy
-        landuse_reclass[landuse_original == 4] = 4 # pasture -> not soy
+        landuse_reclass[landuse_original == 1] = 2 # cerrado -> not soy
+        landuse_reclass[landuse_original == 2] = 2 # fallow/cotton -> not soy
+        landuse_reclass[landuse_original == 3] = 2 # forest -> not soy
+        landuse_reclass[landuse_original == 4] = 2 # pasture -> not soy
         landuse_reclass[landuse_original == 5] = 1 # soy/ corn -> soy
         landuse_reclass[landuse_original == 6] = 1 # soy/ cotton -> soy
         landuse_reclass[landuse_original == 7] = 1 # soy/ fallow -> soy
         landuse_reclass[landuse_original == 8] = 1 # soy/ millet -> soy
         landuse_reclass[landuse_original == 9] = 1 # soy/ sunflower -> soy
-        landuse_reclass[landuse_original == 10] = 4 # sugarcane -> not soy
-        landuse_reclass[landuse_original == 11] = 2 # urban area -> urban area
+        landuse_reclass[landuse_original == 10] = 2 # sugarcane -> not soy
+        landuse_reclass[landuse_original == 11] = 4 # urban area -> urban area
         landuse_reclass[landuse_original == 12] = 3 # water -> water
-        landuse_reclass[landuse_original == 13] = 4 # secondary vegetation -> not soy
+        landuse_reclass[landuse_original == 13] = 2 # secondary vegetation -> not soy
         landuse_reclass[landuse_original == 15] = 5 # no data -> no data
 
         im1 = plt.imshow(landuse_original, interpolation='none',
