@@ -17,16 +17,20 @@ meanAverage = (mean_Tmax + mean_Tmin) / 2
 new_matrix = matrix(c(temperatur_map$ID.lat.lon.alt, meanAverage),803)
 
 getAllPointsWithinBbox = function(allPoints, bbox) {
+  points = c()
   for (i in 1:length(allPoints[,1])) {
     lat = allPoints[i,][2]
     lon = allPoints[i,][3]
     if (lat <= bbox[2] && lat >= bbox[4] && lon >= bbox[1] && lon <= bbox[3]) {
-      print(allPoints[i,])
+      p = c(allPoints[i,][3], allPoints[i,][2], allPoints[i,][5])
+      points = append(points, p)
     }
   }
+  return(matrix(points,3,byrow=TRUE))
 }
 
-getAllPointsWithinBbox(new_matrix, bbox_cerrado)
+points = getAllPointsWithinBbox(new_matrix, bbox_cerrado)
+print(points)
 
 coors = new_matrix[,2:3]
 leaflet() %>% addTiles() %>%
