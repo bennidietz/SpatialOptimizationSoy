@@ -17,8 +17,8 @@ data = Dataset(file, mode='r')
 
 #crop dataset => precipitation subset
 
-print(data.variables['latitude'][:])
-print(data.variables['longitude'][:])
+#print(data.variables['latitude'][:])
+#print(data.variables['longitude'][:])
 #print(data.variables['prec'][:])
 #print(dir(data.variables['latitude']))
 #print(data.variables['latitude'].dimensions())
