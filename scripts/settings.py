@@ -52,3 +52,12 @@ def get_bounding_box_amazon_lat_bounds(): return bounding_box_amazon_lat_bounds
 def get_bounding_box_amazon_lon_bounds(): return bounding_box_amazon_lon_bounds
 def get_bounding_box_cerrado_lat_bounds(): return bounding_box_amazon_lat_bounds
 def get_bounding_box_cerrado_lon_bounds(): return bounding_box_cerrado_lon_bounds
+
+def getEnding(string):
+    return "'" + string[string.rindex("/")+1:] + "'"
+
+def printFileCreated(filename):
+    print("New file was created at: " + getEnding(filename) + "...")
+
+def printFileAlreadyExists(filename):
+    print("The file " + getEnding(filename) + " already exists.")

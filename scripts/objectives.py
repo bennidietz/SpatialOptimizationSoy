@@ -1,9 +1,9 @@
-import os
+import os, settings
 
 default_directory = os.path.dirname(os.path.realpath(__file__))
 
 import numpy as np
-from compute_genome import create_patch_ID_map
+from external import compute_genome
 import pickle
 
 # calculate soy yield of landuse
@@ -20,8 +20,8 @@ def calc_soy_yield(landuse_map,soy_map,area):
     return(output)
 
 # read clipped land use
-amazon_landuse = np.load(default_directory + "/data/landuse_map_in_amazon.npy")
-cerrado_landuse = np.load(default_directory + "/data/landuse_map_in_cerrado.npy")
+amazon_landuse = np.load(settings.get_file_reclass_amazon_npy())
+cerrado_landuse = np.load(settings.get_file_reclass_cerrado_npy())
 cellArea = 6.25
 amazon_landuse = [amazon_landuse]
 print(np.shape(amazon_landuse))
@@ -62,7 +62,7 @@ def calculate_above_ground_biomass(landuse_map_in,area):
     return(np.array(all_emissions))
 
  # read input data for objectives
-with open(default_directory + "/data/soy_potential_yield_amazon.pkl", 'rb') as output:
+with open(settings.get_file_soy_amazon(), 'rb') as output:
     soy_pot_yield = pickle.load(output)
     yields_test =  calc_soy_yield(amazon_landuse, soy_pot_yield, cellArea)
     print("hier: " + str(yields_test))

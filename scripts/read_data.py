@@ -6,15 +6,6 @@ from matplotlib.colors import ListedColormap
 import pickle
 import matplotlib.patches as mpatches
 
-def getEnding(string):
-    return "'" + string[string.rindex("/")+1:] + "'"
-
-def printFileCreated(filename):
-    print("New file was created at: " + getEnding(filename) + "...")
-
-def printFileAlreadyExists(filename):
-    print("The file " + getEnding(filename) + " already exists.")
-
 def allClassifiedRastersExist():
     return os.path.isfile(settings.get_file_landuse_reclass()) \
     and os.path.isfile(settings.get_file_reclass_amazon_npy()) and os.path.isfile(settings.get_file_reclass_amazon_tif()) \
@@ -103,15 +94,15 @@ if os.path.isfile(settings.get_file_landuse()):
 
         amazon_crop = landuse_reclass[900:1500, 600:1600]
         plt.imsave(settings.get_file_reclass_amazon_tif(), amazon_crop, format='tiff', cmap=cmap3)
-        printFileCreated(settings.get_file_reclass_amazon_tif())
+        settings.printFileCreated(settings.get_file_reclass_amazon_tif())
         np.save(settings.get_file_reclass_amazon_npy(), amazon_crop)
-        printFileCreated(settings.get_file_reclass_amazon_npy())
+        settings.printFileCreated(settings.get_file_reclass_amazon_npy())
 
         cerrado_crop = landuse_reclass[3700:4300, 4000:5000]
         plt.imsave(settings.get_file_reclass_cerrado_tif(), cerrado_crop, format='tiff', cmap=cmap3)
-        printFileCreated(settings.get_file_reclass_cerrado_tif())
+        settings.printFileCreated(settings.get_file_reclass_cerrado_tif())
         np.save(settings.get_file_reclass_cerrado_npy(), cerrado_crop)
-        printFileCreated(settings.get_file_reclass_cerrado_npy_tif())
+        settings.printFileCreated(settings.get_file_reclass_cerrado_npy_tif())
 
         plt.show()
     else:
@@ -119,25 +110,25 @@ if os.path.isfile(settings.get_file_landuse()):
 elif allClassifiedRastersExist():
     print("The reclassified rasters already exists for amazon and cerrado.")
 else:
-    print("To create the classified rasters for amazon and cerado, the file " + getEnding(settings.get_file_landuse()) + " is required.")
+    print("To create the classified rasters for amazon and cerado, the file " + settings.getEnding(settings.get_file_landuse()) + " is required.")
 
 if os.path.exists(settings.get_file_soy()):
     if os.path.exists(settings.get_file_soy_amazon()):
-        printFileAlreadyExists(settings.get_file_soy_amazon())
+        settings.printFileAlreadyExists(settings.get_file_soy_amazon())
     else:
         soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[900:1500,600:1600]
         with open(settings.get_file_soy_amazon(), 'wb') as output:
             pickle.dump(soy_pot_yield_amazon, output, pickle.HIGHEST_PROTOCOL)
-        printFileCreated(settings.get_file_soy_amazon())
+        settings.printFileCreated(settings.get_file_soy_amazon())
     if os.path.exists(settings.get_file_soy_cerrado()):
-        printFileAlreadyExists(settings.get_file_soy_cerrado())
+        settings.printFileAlreadyExists(settings.get_file_soy_cerrado())
     else:
         soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[3700:4300,4000:5000]
         with open(settings.get_file_soy_cerrado(), 'wb') as output:
             pickle.dump(soy_pot_yield_cerrado, output, pickle.HIGHEST_PROTOCOL)
-        printFileCreated(settings.get_file_soy_cerrado())
+        settings.printFileCreated(settings.get_file_soy_cerrado())
 elif not os.path.isfile(settings.get_file_soy_amazon()) or not os.path.isfile(settings.get_file_soy_cerrado()):
-    print("The file " + getEnding(settings.get_file_soy()) + " is required to generate the data for amazon and cerrado.")
+    print("The file " + settings.getEnding(settings.get_file_soy()) + " is required to generate the data for amazon and cerrado.")
 
 '''
 # read potential yield maps from asc file

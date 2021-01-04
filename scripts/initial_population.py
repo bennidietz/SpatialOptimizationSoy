@@ -9,13 +9,11 @@ default_directory = os.path.dirname(os.path.realpath(__file__))
 def initialize_spatial(pop_size, landuse_map_path):
     all_landusemaps = []
     landuse_map_in = np.load(landuse_map_path)
-    print(landuse_map_in.shape[0])
-    print(landuse_map_in.shape[1])
     rows = landuse_map_in.shape[0]
     cols = landuse_map_in.shape[1]
 
     # iterate to get multiple realizations for the initial population
-    for i in range(1,pop_size+1):
+    for i in range(1, pop_size+1):
         #use uniform distribution to select 30% of the cells
         landuse_map_ini = np.zeros((rows,cols),dtype='uint8')
         random_map = np.random.uniform(0.0,1.0,(rows,cols))
@@ -24,12 +22,8 @@ def initialize_spatial(pop_size, landuse_map_path):
         # take window average of random map to create larger patches
         for x in range(0,cols-1):
             for y in range(0,rows-1):
-                '''print(rows)
-                print(cols)
-                print(x)
-                print(y)'''
                 if x == 0 or y == 0 or x == cols-1 or y == rows-1:
-                    random_map_mw[x,y] = 1.0
+                    random_map_mw[y,x] = 1.0
                 else:
                     random_map_mw[y,x] = random_map[y-1:y+2,x-1:x+2].mean()
 
