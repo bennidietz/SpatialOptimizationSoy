@@ -1,3 +1,6 @@
+#file no longer used yet as nc files can now be read
+
+
 #required to read mat files from version 7.3
 
 import h5py

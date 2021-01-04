@@ -1,23 +1,10 @@
+import settings
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import pickle
 import matplotlib.patches as mpatches
-import os
-
-default_directory = os.path.dirname(os.path.realpath(__file__))
-
-filename_base_landuse_data = default_directory + "/data/mt_2017_v3_1_reprojection.tif"
-filename_reclass_whole = default_directory + "/data/MatoGrosso_2017_reclass.tif"
-
-filename_reclass_amazon_tif = default_directory + "/data/Reclassified_Crop_Amazon.tif"
-filename_reclass_amazon_npy = default_directory + "/data/landuse_map_in_amazon.npy"
-filename_reclass_cerrado_tif = default_directory + "/data/Reclassified_Crop_Cerrado.tif"
-filename_reclass_cerrado_npy = default_directory + "/data/landuse_map_in_cerrado.npy"
-
-filename_base_soy_yield = default_directory + "/data/soy_new.asc"
-filename_soy_amazon = default_directory + "/data/soy_potential_yield_amazon.pkl"
-filename_soy_cerrado = default_directory + "/data/soy_potential_yield_cerrado.pkl"
 
 def getEnding(string):
     return "'" + string[string.rindex("/")+1:] + "'"
@@ -29,14 +16,14 @@ def printFileAlreadyExists(filename):
     print("The file " + getEnding(filename) + " already exists.")
 
 def allClassifiedRastersExist():
-    return os.path.isfile(filename_reclass_whole) \
-    and os.path.isfile(filename_reclass_amazon_npy) and os.path.isfile(filename_reclass_amazon_tif) \
-    and os.path.isfile(filename_reclass_cerrado_npy) and os.path.isfile(filename_reclass_cerrado_tif)
+    return os.path.isfile(settings.get_file_landuse_reclass()) \
+    and os.path.isfile(settings.get_file_reclass_amazon_npy()) and os.path.isfile(settings.get_file_reclass_amazon_tif()) \
+    and os.path.isfile(settings.get_file_reclass_cerrado_npy()) and os.path.isfile(settings.get_file_reclass_cerrado_tif())
 
-if os.path.isfile(filename_base_landuse_data):
+if os.path.isfile(settings.get_file_landuse()):
     if not allClassifiedRastersExist():
         # read data from tiff file as numpy array
-        landuse_original = plt.imread(filename_base_landuse_data)
+        landuse_original = plt.imread(settings.get_file_landuse())
 
         # plot original landuse map
         f1, ax1 = plt.subplots(1)
@@ -56,16 +43,15 @@ if os.path.isfile(filename_base_landuse_data):
                 mpatches.Patch(color="#0cf8c1",label = 'Secondary veg.'),
                 mpatches.Patch(color="#00000000",label = 'No data')
         ]
-        im1 = plt.imshow(landuse_original,interpolation='none',
+        im1 = plt.imshow(landuse_original, interpolation='none',
         cmap=cmap1,vmin = 0.5, vmax = 15.5)
         ax1.set_title('Landuse map original')
         ax1.set_xlabel('Column #')
         ax1.set_ylabel('Row #')
         ax1.legend(handles=legend_landuse1,bbox_to_anchor=(1.05,1), loc=2,
             borderaxespad=0.)
-        plt.imsave(default_directory +
-            "/data/MatoGrosso_2017_original.tif",
-            landuse_original,format='tiff',cmap=cmap1)
+        plt.imsave(settings.get_file_landuse_colored(),
+            landuse_original, format='tiff', cmap=cmap1)
 
         # plot reclassified landuse map
         f2, ax2 = plt.subplots(1)
@@ -106,26 +92,26 @@ if os.path.isfile(filename_base_landuse_data):
         landuse_reclass[landuse_original == 13] = 4
         landuse_reclass[landuse_original == 15] = 5
 
-        im1 = plt.imshow(landuse_original,interpolation='none',
-        cmap=cmap2,vmin = 0.5, vmax = 15.5)
+        im1 = plt.imshow(landuse_original, interpolation='none',
+        cmap=cmap2, vmin = 0.5, vmax = 15.5)
         ax2.set_title('Landuse map reclassified')
         ax2.set_xlabel('Column #')
         ax2.set_ylabel('Row #')
-        ax2.legend(handles=legend_landuse3,bbox_to_anchor=(1.05,1), loc=2,
+        ax2.legend(handles=legend_landuse3, bbox_to_anchor=(1.05,1), loc=2,
             borderaxespad=0.)
-        plt.imsave(filename_reclass_whole, landuse_reclass, format = "tiff", cmap = cmap2)
+        plt.imsave(settings.get_file_landuse_reclass(), landuse_reclass, format = "tiff", cmap = cmap2)
 
-        amazon_crop = landuse_reclass[900:1500,600:1600]
-        plt.imsave(filename_reclass_amazon_tif,amazon_crop,format='tiff',cmap=cmap3)
-        printFileCreated(filename_reclass_amazon_tif)
-        np.save(filename_reclass_amazon_npy,amazon_crop)
-        printFileCreated(filename_reclass_amazon_npy)
+        amazon_crop = landuse_reclass[900:1500, 600:1600]
+        plt.imsave(settings.get_file_reclass_amazon_tif(), amazon_crop, format='tiff', cmap=cmap3)
+        printFileCreated(settings.get_file_reclass_amazon_tif())
+        np.save(settings.get_file_reclass_amazon_npy(), amazon_crop)
+        printFileCreated(settings.get_file_reclass_amazon_npy())
 
-        cerrado_crop = landuse_reclass[3700:4300,4000:5000]
-        plt.imsave(filename_reclass_cerrado_tif,cerrado_crop,format='tiff',cmap=cmap3)
-        printFileCreated(filename_reclass_cerrado_tif)
-        np.save(filename_reclass_cerrado_npy,cerrado_crop)
-        printFileCreated(filename_reclass_cerrado_npy)
+        cerrado_crop = landuse_reclass[3700:4300, 4000:5000]
+        plt.imsave(settings.get_file_reclass_cerrado_tif(), cerrado_crop, format='tiff', cmap=cmap3)
+        printFileCreated(settings.get_file_reclass_cerrado_tif())
+        np.save(settings.get_file_reclass_cerrado_npy(), cerrado_crop)
+        printFileCreated(settings.get_file_reclass_cerrado_npy_tif())
 
         plt.show()
     else:
@@ -133,25 +119,25 @@ if os.path.isfile(filename_base_landuse_data):
 elif allClassifiedRastersExist():
     print("The reclassified rasters already exists for amazon and cerrado.")
 else:
-    print("To create the classified rasters for amazon and cerado, the file " + getEnding(filename_base_landuse_data) + " is required.")
+    print("To create the classified rasters for amazon and cerado, the file " + getEnding(settings.get_file_landuse()) + " is required.")
 
-if os.path.exists(filename_base_soy_yield):
-    if os.path.exists(filename_soy_amazon):
-        printFileAlreadyExists(filename_soy_amazon)
+if os.path.exists(settings.get_file_soy()):
+    if os.path.exists(settings.get_file_soy_amazon()):
+        printFileAlreadyExists(settings.get_file_soy_amazon())
     else:
-        soy_pot_yield_amazon = np.loadtxt(filename_base_soy_yield, skiprows=6)[900:1500,600:1600]
-        with open(filename_soy_amazon, 'wb') as output:
+        soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[900:1500,600:1600]
+        with open(settings.get_file_soy_amazon(), 'wb') as output:
             pickle.dump(soy_pot_yield_amazon, output, pickle.HIGHEST_PROTOCOL)
-        printFileCreated(filename_soy_amazon)
-    if os.path.exists(filename_soy_cerrado):
-        printFileAlreadyExists(filename_soy_cerrado)
+        printFileCreated(settings.get_file_soy_amazon())
+    if os.path.exists(settings.get_file_soy_cerrado()):
+        printFileAlreadyExists(settings.get_file_soy_cerrado())
     else:
-        soy_pot_yield_cerrado = np.loadtxt(filename_base_soy_yield,skiprows=6)[3700:4300,4000:5000]
-        with open(filename_soy_cerrado, 'wb') as output:
+        soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[3700:4300,4000:5000]
+        with open(settings.get_file_soy_cerrado(), 'wb') as output:
             pickle.dump(soy_pot_yield_cerrado, output, pickle.HIGHEST_PROTOCOL)
-        printFileCreated(filename_soy_cerrado)
-elif not os.path.isfile(filename_soy_amazon) or not os.path.isfile(filename_soy_cerrado):
-    print("The file " + getEnding(filename_base_soy_yield) + " is required to generate the data for amazon and cerrado.")
+        printFileCreated(settings.get_file_soy_cerrado())
+elif not os.path.isfile(settings.get_file_soy_amazon()) or not os.path.isfile(settings.get_file_soy_cerrado()):
+    print("The file " + getEnding(settings.get_file_soy()) + " is required to generate the data for amazon and cerrado.")
 
 '''
 # read potential yield maps from asc file
