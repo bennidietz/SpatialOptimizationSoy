@@ -8,7 +8,7 @@ import os
 default_directory = os.path.dirname(os.path.realpath(__file__))
 filename = "weather2.mat"
 
-filepath = default_directory + "/" + filename
+filepath = default_directory + "/data/" + filename
 arrays = {}
 f = h5py.File(filepath)
 for k, v in f.items():

@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import pickle
 import matplotlib.patches as mpatches
@@ -7,17 +7,17 @@ import os
 
 default_directory = os.path.dirname(os.path.realpath(__file__))
 
-filename_base_landuse_data = default_directory + "/mt_2017_v3_1_reprojection.tif"
-filename_reclass_whole = default_directory + "/MatoGrosso_2017_reclass.tif"
+filename_base_landuse_data = default_directory + "/data/mt_2017_v3_1_reprojection.tif"
+filename_reclass_whole = default_directory + "/data/MatoGrosso_2017_reclass.tif"
 
-filename_reclass_amazon_tif = default_directory + "/Reclassified_Crop_Amazon.tif"
-filename_reclass_amazon_npy = default_directory + "/landuse_map_in_amazon.npy"
-filename_reclass_cerrado_tif = default_directory + "/Reclassified_Crop_Cerrado.tif"
-filename_reclass_cerrado_npy = default_directory + "/landuse_map_in_cerrado.npy"
+filename_reclass_amazon_tif = default_directory + "/data/Reclassified_Crop_Amazon.tif"
+filename_reclass_amazon_npy = default_directory + "/data/landuse_map_in_amazon.npy"
+filename_reclass_cerrado_tif = default_directory + "/data/Reclassified_Crop_Cerrado.tif"
+filename_reclass_cerrado_npy = default_directory + "/data/landuse_map_in_cerrado.npy"
 
-filename_base_soy_yield = default_directory + "/soy_new.asc"
-filename_soy_amazon = default_directory + "/soy_potential_yield_amazon.pkl"
-filename_soy_cerrado = default_directory + "/soy_potential_yield_cerrado.pkl"
+filename_base_soy_yield = default_directory + "/data/soy_new.asc"
+filename_soy_amazon = default_directory + "/data/soy_potential_yield_amazon.pkl"
+filename_soy_cerrado = default_directory + "/data/soy_potential_yield_cerrado.pkl"
 
 def getEnding(string):
     return "'" + string[string.rindex("/")+1:] + "'"
@@ -64,7 +64,7 @@ if os.path.isfile(filename_base_landuse_data):
         ax1.legend(handles=legend_landuse1,bbox_to_anchor=(1.05,1), loc=2,
             borderaxespad=0.)
         plt.imsave(default_directory +
-            "/MatoGrosso_2017_original.tif",
+            "/data/MatoGrosso_2017_original.tif",
             landuse_original,format='tiff',cmap=cmap1)
 
         # plot reclassified landuse map
@@ -128,11 +128,11 @@ if os.path.isfile(filename_base_landuse_data):
         printFileCreated(filename_reclass_cerrado_npy)
 
         plt.show()
-    else: 
+    else:
         print("The reclassified rasters already exists for amazon and cerrado.")
 elif allClassifiedRastersExist():
     print("The reclassified rasters already exists for amazon and cerrado.")
-else: 
+else:
     print("To create the classified rasters for amazon and cerado, the file " + getEnding(filename_base_landuse_data) + " is required.")
 
 if os.path.exists(filename_base_soy_yield):
@@ -156,24 +156,24 @@ elif not os.path.isfile(filename_soy_amazon) or not os.path.isfile(filename_soy_
 '''
 # read potential yield maps from asc file
 sugarcane_pot_yield = np.loadtxt(default_directory +
-    "/Objectives/sugarcane_new.asc", 
+    "/data/Objectives/sugarcane_new.asc",
     skiprows=6)[2800:2900,1700:1800]
-cotton_pot_yield = np.loadtxt(default_directory + 
-    "/Objectives/cotton_new.asc",
+cotton_pot_yield = np.loadtxt(default_directory +
+    "/data/Objectives/cotton_new.asc",
     skiprows=6)[2800:2900,1700:1800]
-pasture_pot_yield = np.loadtxt(default_directory + 
-    "/Objectives/grass_new.asc", 
+pasture_pot_yield = np.loadtxt(default_directory +
+    "/data/Objectives/grass_new.asc",
     skiprows=6)[2800:2900,1700:1800]
 
 # save the cropped potential yield maps
-with open(default_directory + "/Objectives/sugarcane_potential_yield_example.pkl", 'wb') as output:
+with open(default_directory + "/data/Objectives/sugarcane_potential_yield_example.pkl", 'wb') as output:
     pickle.dump(sugarcane_pot_yield, output, pickle.HIGHEST_PROTOCOL)
-with open(default_directory + "/Objectives/soy_potential_yield_example.pkl", 'wb') as output:
+with open(default_directory + "/data/Objectives/soy_potential_yield_example.pkl", 'wb') as output:
     pickle.dump(soy_pot_yield, output, pickle.HIGHEST_PROTOCOL)
-with open(default_directory + "/Objectives/cotton_potential_yield_example.pkl", 'wb') as output:
+with open(default_directory + "/data/Objectives/cotton_potential_yield_example.pkl", 'wb') as output:
     pickle.dump(cotton_pot_yield, output, pickle.HIGHEST_PROTOCOL)
-with open(default_directory + "/Objectives/pasture_potential_yield_example.pkl", 'wb') as output:
+with open(default_directory + "/data/Objectives/pasture_potential_yield_example.pkl", 'wb') as output:
     pickle.dump(pasture_pot_yield, output, pickle.HIGHEST_PROTOCOL)
 
-plt.imshow(default_directory + "/Objectives/soy_potential_yield_example.pkl",interpolation='none',
+plt.imshow(default_directory + "/data/Objectives/soy_potential_yield_example.pkl",interpolation='none',
     cmap=cmap2, vmin = 0.5, vmax = 10.5) '''

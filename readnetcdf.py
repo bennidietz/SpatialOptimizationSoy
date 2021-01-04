@@ -9,7 +9,7 @@ import os
 default_directory = os.path.dirname(os.path.realpath(__file__))
 
 filename = "prec_monthly_UT_Brazil_v2_198001_201312.nc"
-file = default_directory + "/" + filename
+file = default_directory + "/data/" + filename
 
 data = Dataset(file, mode='r')
 #print(data)
