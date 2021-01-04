@@ -1,5 +1,5 @@
 import numpy as np
-import os
+import os, settings
 import matplotlib.pyplot as plt 
 from matplotlib.colors import ListedColormap
 
@@ -49,7 +49,7 @@ def initialize_spatial(pop_size, landuse_map_path):
 
 
 
-maps = initialize_spatial(3, default_directory + "/data/landuse_map_in_amazon.npy")
+maps = initialize_spatial(3, settings.get_file_reclass_amazon_npy())
 f, axes = plt.subplots(1,3)
 
 cmap = ListedColormap(["#10773e","#b3cc33", "#0cf8c1", "#a4507d",
