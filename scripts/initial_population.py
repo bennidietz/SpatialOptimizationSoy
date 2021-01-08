@@ -1,5 +1,5 @@
 import numpy as np
-import os, settings
+import os, settings, debugger_helper
 import matplotlib.pyplot as plt 
 from matplotlib.colors import ListedColormap
 
@@ -19,6 +19,9 @@ def initialize_spatial(pop_size, landuse_map_path):
         random_map = np.random.uniform(0.0,1.0,(rows,cols))
         random_map_mw = np.zeros((rows,cols))
 
+        print("Interation " + str(i) + ":")
+        print("Initial state: " + str(debugger_helper.getOccurancies(landuse_map_ini)))
+
         # take window average of random map to create larger patches
         for x in range(0,cols-1):
             for y in range(0,rows-1):
@@ -30,30 +33,26 @@ def initialize_spatial(pop_size, landuse_map_path):
         # 70% of the map remains the current land use
         landuse_map_ini = np.where(random_map_mw>=0.3, 
                             landuse_map_in,landuse_map_ini)
-
+        print("After letting 70% of cells remain : " + str(debugger_helper.getOccurancies(landuse_map_ini)))
         # 30% of the map will become new
         # urban, water and no data will remain the same
-        landuse_map_ini = np.where(landuse_map_in >= 8,
+        # reclassify landuse map: 1 = soy; 2 = not soy; 3 = water; 4 = urban area; 5 = no data
+        landuse_map_ini = np.where(landuse_map_in >= 3,
                             landuse_map_in,landuse_map_ini)
-
-        # other land use classes can change into 3, 4, 5, 6 or 7 
+        print("After letting 30% of become new : " + str(debugger_helper.getOccurancies(landuse_map_ini)))
+        # other land use classes can change into 1 or 2
         # choose which land cover type
         landuse_map_ini = np.where(landuse_map_ini == 0,
-                        np.random.randint(low=3, high=8,size=(rows,cols)),
+                        np.random.randint(low=1, high=3,size=(rows,cols)),
                         landuse_map_ini)
-                        
+        print("After transfer others on 1 and 2: " + str(debugger_helper.getOccurancies(landuse_map_ini)))
         all_landusemaps.append(landuse_map_ini) 
     return np.array(all_landusemaps)
-
-
-
-
 
 maps = initialize_spatial(3, settings.get_file_reclass_amazon_npy())
 f, axes = plt.subplots(1,3)
 
-cmap = ListedColormap(["#10773e","#b3cc33", "#0cf8c1", "#a4507d",
-        "#877712","#be94e8","#eeefce","#1b5ee4", "#614040","#000000"])
+cmap = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e"])
 for amap, ax in zip(maps, axes):
     im = ax.imshow(amap,interpolation='none', cmap=cmap,vmin = 0.5, vmax = 10.5)
 plt.colorbar(im, orientation='horizontal')
