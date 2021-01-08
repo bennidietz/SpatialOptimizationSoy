@@ -1,4 +1,4 @@
-import settings
+import settings, debugger_helper
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -46,28 +46,28 @@ if os.path.isfile(settings.get_file_landuse()):
 
         # plot reclassified landuse map
         f2, ax2 = plt.subplots(1)
-        cmap2 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e", "#000000"])
+        cmap2 = ListedColormap(["#b3cc33","#10773e","#be94e8","#1b5ee4","#000000"])
         legend_landuse2 = [
                 mpatches.Patch(color="#b3cc33",label = 'Soy'),
+                mpatches.Patch(color="#10773e",label = 'Not soy'),
                 mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
                 mpatches.Patch(color="#1b5ee4",label = 'Water'),
-                mpatches.Patch(color="#10773e",label = 'Not soy'),
                 mpatches.Patch(color="#000000",label = 'No data')
         ]
 
-        cmap3 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e"])
+        cmap3 = ListedColormap(["#b3cc33","#10773e", "#be94e8","#1b5ee4"])
         legend_landuse3 = [
                 mpatches.Patch(color="#b3cc33",label = 'Soy'),
+                mpatches.Patch(color="#10773e",label = 'Not soy'),
                 mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
-                mpatches.Patch(color="#1b5ee4",label = 'Water'),
-                mpatches.Patch(color="#10773e",label = 'Not soy')
+                mpatches.Patch(color="#1b5ee4",label = 'Water')
         ]
 
         # create empty map
         rows = landuse_original.shape[0]
         cols = landuse_original.shape[1]
         landuse_reclass = np.zeros((rows,cols),dtype= 'uint8')
-        # reclassify landuse map: 1 = soy; 2 = urban area; 3 = water; 4 = not soy; 5 = no data
+        # reclassify landuse map: 1 = soy; 2 = not soy; 3 = water; 4 = urban area; 5 = no data
         landuse_reclass[landuse_original == 1] = 2 # cerrado -> not soy
         landuse_reclass[landuse_original == 2] = 2 # fallow/cotton -> not soy
         landuse_reclass[landuse_original == 3] = 2 # forest -> not soy
@@ -82,6 +82,7 @@ if os.path.isfile(settings.get_file_landuse()):
         landuse_reclass[landuse_original == 12] = 3 # water -> water
         landuse_reclass[landuse_original == 13] = 2 # secondary vegetation -> not soy
         landuse_reclass[landuse_original == 15] = 5 # no data -> no data
+        print(debugger_helper.getOccurancies(landuse_reclass))
 
         im1 = plt.imshow(landuse_original, interpolation='none',
         cmap=cmap2, vmin = 0.5, vmax = 15.5)
