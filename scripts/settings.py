@@ -26,10 +26,15 @@ file_tmax = "Tmax_daily_UT_Brazil_v2_20140101_20170731_Control_s1.nc"
 
 #bounding boxes
 
-bounding_box_amazon_lat_bounds = [-10.090970, -8.954522]
-bounding_box_amazon_lon_bounds = [-60.530319, -58.636405]
-bounding_box_cerrado_lat_bounds = [-15.39383, -14.25748]
-bounding_box_cerrado_lon_bounds = [-54.09101, -52.19710]
+#bounding_box_amazon_lat_bounds = [-10.090970, -8.954522]
+bounding_box_amazon_lat_bounds = [-11.35979, -10.84844]
+#bounding_box_amazon_lon_bounds = [-60.530319, -58.636405]
+bounding_box_amazon_lon_bounds = [-55.60614, -55.03797]
+
+#bounding_box_cerrado_lat_bounds = [-15.39383, -14.25748]
+bounding_box_cerrado_lat_bounds = [-16.92790, -16.41654]
+#bounding_box_cerrado_lon_bounds = [-54.09101, -52.19710]
+bounding_box_cerrado_lon_bounds = [-54.90540, -54.33722]
 
 #return functions
 
