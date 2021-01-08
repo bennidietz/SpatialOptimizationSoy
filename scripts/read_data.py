@@ -93,17 +93,19 @@ if os.path.isfile(settings.get_file_landuse()):
             borderaxespad=0.)
         plt.imsave(settings.get_file_landuse_reclass(), landuse_reclass, format = "tiff", cmap = cmap2)
 
-        amazon_crop = landuse_reclass[900:1500, 600:1600]
+        amazon_crop = landuse_reclass[1900:2170, 3200:3500] # 270 x 300
         plt.imsave(settings.get_file_reclass_amazon_tif(), amazon_crop, format='tiff', cmap=cmap3)
         settings.printFileCreated(settings.get_file_reclass_amazon_tif())
         np.save(settings.get_file_reclass_amazon_npy(), amazon_crop)
+        print(debugger_helper.getOccurancies(amazon_crop))
         settings.printFileCreated(settings.get_file_reclass_amazon_npy())
 
-        cerrado_crop = landuse_reclass[3700:4300, 4000:5000]
+        cerrado_crop = landuse_reclass[4840:5110, 3570:3870] # 270 x 300
         plt.imsave(settings.get_file_reclass_cerrado_tif(), cerrado_crop, format='tiff', cmap=cmap3)
         settings.printFileCreated(settings.get_file_reclass_cerrado_tif())
         np.save(settings.get_file_reclass_cerrado_npy(), cerrado_crop)
-        settings.printFileCreated(settings.get_file_reclass_cerrado_npy_tif())
+        print(debugger_helper.getOccurancies(cerrado_crop))
+        settings.printFileCreated(settings.get_file_reclass_cerrado_npy())
 
         plt.show()
     else:
