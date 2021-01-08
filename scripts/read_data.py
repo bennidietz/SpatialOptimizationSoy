@@ -119,14 +119,14 @@ if os.path.exists(settings.get_file_soy()):
     if os.path.exists(settings.get_file_soy_amazon()):
         settings.printFileAlreadyExists(settings.get_file_soy_amazon())
     else:
-        soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[900:1500,600:1600]
+        soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[1900:2170, 3200:3500] # 270 x 300
         with open(settings.get_file_soy_amazon(), 'wb') as output:
             pickle.dump(soy_pot_yield_amazon, output, pickle.HIGHEST_PROTOCOL)
         settings.printFileCreated(settings.get_file_soy_amazon())
     if os.path.exists(settings.get_file_soy_cerrado()):
         settings.printFileAlreadyExists(settings.get_file_soy_cerrado())
     else:
-        soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[3700:4300,4000:5000]
+        soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[4840:5110, 3570:3870] # 270 x 300
         with open(settings.get_file_soy_cerrado(), 'wb') as output:
             pickle.dump(soy_pot_yield_cerrado, output, pickle.HIGHEST_PROTOCOL)
         settings.printFileCreated(settings.get_file_soy_cerrado())
