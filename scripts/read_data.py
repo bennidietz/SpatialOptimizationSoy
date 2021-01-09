@@ -93,14 +93,14 @@ if os.path.isfile(settings.get_file_landuse()):
             borderaxespad=0.)
         plt.imsave(settings.get_file_landuse_reclass(), landuse_reclass, format = "tiff", cmap = cmap2)
 
-        amazon_crop = landuse_reclass[1300:1750, 2750:3200] # 450 x 450
+        amazon_crop = landuse_reclass[1300:1700, 2750:3150] # 400 x 400
         plt.imsave(settings.get_file_reclass_amazon_tif(), amazon_crop, format='tiff', cmap=cmap3)
         settings.printFileCreated(settings.get_file_reclass_amazon_tif())
         np.save(settings.get_file_reclass_amazon_npy(), amazon_crop)
         print(debugger_helper.getOccurancies(amazon_crop))
         settings.printFileCreated(settings.get_file_reclass_amazon_npy())
 
-        cerrado_crop = landuse_reclass[4500:4950, 2000:2450] # 450 x 450
+        cerrado_crop = landuse_reclass[3700:4100, 4000:4400] # 400 x 400
         plt.imsave(settings.get_file_reclass_cerrado_tif(), cerrado_crop, format='tiff', cmap=cmap3)
         settings.printFileCreated(settings.get_file_reclass_cerrado_tif())
         np.save(settings.get_file_reclass_cerrado_npy(), cerrado_crop)
@@ -119,14 +119,14 @@ if os.path.exists(settings.get_file_soy()):
     if os.path.exists(settings.get_file_soy_amazon()):
         settings.printFileAlreadyExists(settings.get_file_soy_amazon())
     else:
-        soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[1300:1750, 2750:3200] # 450 x 450
+        soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[1300:1700, 2750:3150] # 400 x 400
         with open(settings.get_file_soy_amazon(), 'wb') as output:
             pickle.dump(soy_pot_yield_amazon, output, pickle.HIGHEST_PROTOCOL)
         settings.printFileCreated(settings.get_file_soy_amazon())
     if os.path.exists(settings.get_file_soy_cerrado()):
         settings.printFileAlreadyExists(settings.get_file_soy_cerrado())
     else:
-        soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[4500:4950, 2000:2450] # 450 x 450
+        soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[3700:4100, 4000:4400] # 400 x 400
         with open(settings.get_file_soy_cerrado(), 'wb') as output:
             pickle.dump(soy_pot_yield_cerrado, output, pickle.HIGHEST_PROTOCOL)
         settings.printFileCreated(settings.get_file_soy_cerrado())
