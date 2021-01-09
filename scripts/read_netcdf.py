@@ -113,3 +113,8 @@ np.save(settings.get_file_temp_amazon(), np.array(temp_amazon))
 np.save(settings.get_file_temp_cerrado(), np.array(temp_cerrado))
 
 print("Stored precipitation and temperature files in data directory.")
+
+#"interpolate" data to a full size grid
+
+n_cells = 400
+prec_amazon_scaled = np.kron(prec_amazon, np.ones((n_cells, n_cells)))
