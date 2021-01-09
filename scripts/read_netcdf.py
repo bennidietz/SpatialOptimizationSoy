@@ -102,3 +102,14 @@ print("Tmax data loaded and cropped. The average values for the " + str(len(data
 
 temp_amazon = (np.array(tmin_amazon) + np.array(tmax_amazon)) / 2.0
 temp_cerrado = (np.array(tmin_cerrado) + np.array(tmax_cerrado)) / 2.0
+
+print("Temperature data for amazon and cerrado have been calculated.")
+
+#store data files in data folder
+
+np.save(settings.get_file_prec_amazon(), np.array(prec_amazon))
+np.save(settings.get_file_prec_cerrado(), np.array(prec_cerrado))
+np.save(settings.get_file_temp_amazon(), np.array(temp_amazon))
+np.save(settings.get_file_temp_cerrado(), np.array(temp_cerrado))
+
+print("Stored precipitation and temperature files in data directory.")
