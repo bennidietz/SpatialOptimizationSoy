@@ -5,6 +5,7 @@
 import settings
 from netCDF4 import Dataset
 import numpy as np
+from scipy.interpolate import griddata
 
 #function that calculates mean values from multidimensional arrays of netcdf files
 
@@ -114,7 +115,28 @@ np.save(settings.get_file_temp_cerrado(), np.array(temp_cerrado))
 
 print("Stored precipitation and temperature files in data directory.")
 
-#"interpolate" data to a full size grid
+#interpolation
 
 n_cells = 400
-prec_amazon_scaled = np.kron(prec_amazon, np.ones((n_cells, n_cells)))
+
+points = np.array([[0, 0], [0, int((n_cells - 1) / 2)], [0, n_cells - 1], [int((n_cells - 1) / 2), 0], [int((n_cells - 1) / 2), int((n_cells - 1) / 2)], [int((n_cells - 1) / 2), n_cells - 1], [n_cells - 1, 0], [n_cells - 1, int((n_cells - 1) / 2)], [n_cells - 1, n_cells - 1]])
+grid_x, grid_y = np.mgrid[0:n_cells, 0:n_cells]
+
+values = prec_amazon.flatten()
+prec_amazon_interpolated = griddata(points, values, (grid_x, grid_y), method='linear')
+
+values = prec_cerrado.flatten()
+prec_cerrado_interpolated = griddata(points, values, (grid_x, grid_y), method='linear')
+
+values = temp_amazon.flatten()
+temp_amazon_interpolated = griddata(points, values, (grid_x, grid_y), method='linear')
+
+values = temp_cerrado.flatten()
+temp_cerrado_interpolated = griddata(points, values, (grid_x, grid_y), method='linear')
+
+np.save(settings.get_file_prec_amazon_interpolated(), np.array(prec_amazon_interpolated))
+np.save(settings.get_file_prec_cerrado_interpolated(), np.array(prec_cerrado_interpolated))
+np.save(settings.get_file_temp_amazon_interpolated(), np.array(temp_amazon_interpolated))
+np.save(settings.get_file_temp_cerrado_interpolated(), np.array(temp_cerrado_interpolated))
+
+print("Stored interpolated precipitation and temperature data (grid size of " + str(n_cells) + "x" + str(n_cells) + ")")
