@@ -31,6 +31,11 @@ file_prec_cerrado = "prec_cerrado.npy"
 file_temp_amazon = "temp_amazon.npy"
 file_temp_cerrado = "temp_cerrado.npy"
 
+file_prec_amazon_interpolated = "prec_amazon_interpolated.npy"
+file_prec_cerrado_interpolated = "prec_cerrado_interpolated.npy"
+file_temp_amazon_interpolated = "temp_amazon_interpolated.npy"
+file_temp_cerrado_interpolated = "temp_cerrado_interpolated.npy"
+
 #bounding boxes
 
 bounding_box_amazon_lat_bounds = [-10.46965, -9.712087]
@@ -60,6 +65,10 @@ def get_file_prec_amazon(): return data_directory + "/" + file_prec_amazon
 def get_file_prec_cerrado(): return data_directory + "/" + file_prec_cerrado
 def get_file_temp_amazon(): return data_directory + "/" + file_temp_amazon
 def get_file_temp_cerrado(): return data_directory + "/" + file_temp_cerrado
+def get_file_prec_amazon_interpolated(): return data_directory + "/" + file_prec_amazon_interpolated
+def get_file_prec_cerrado_interpolated(): return data_directory + "/" + file_prec_cerrado_interpolated
+def get_file_temp_amazon_interpolated(): return data_directory + "/" + file_temp_amazon_interpolated
+def get_file_temp_cerrado_interpolated(): return data_directory + "/" + file_temp_cerrado_interpolated
 def get_bounding_box_amazon_lat_bounds(): return bounding_box_amazon_lat_bounds
 def get_bounding_box_amazon_lon_bounds(): return bounding_box_amazon_lon_bounds
 def get_bounding_box_cerrado_lat_bounds(): return bounding_box_amazon_lat_bounds
