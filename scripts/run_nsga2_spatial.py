@@ -29,7 +29,9 @@ with open(default_directory + "/Objectives/soy_potential_yield_example.pkl", 'rb
     soy_pot_yield = pickle.load(output)
 
 prec_amazon = np.load(settings.get_file_prec_amazon_interpolated())
+temp_amazon = np.load(settings.get_file_temp_amazon_interpolated())
 prec_cerrado = np.load(settings.get_file_prec_cerrado_interpolated())
+temp_cerrado = np.load(settings.get_file_temp_cerrado_interpolated())
 
 class MyProblem(Problem):
 
@@ -43,7 +45,7 @@ class MyProblem(Problem):
     # define the objective functions
     def _evaluate(self, X, out, *args, **kwargs):
         f1 = -calculate_tot_yield(X[:], soy_pot_yield, cell_area)
-        f2 = -calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
+        f2 = -calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, temp_amazon, cell_area)
         out["F"] = np.column_stack([f1, f2])
 
 problem = MyProblem()

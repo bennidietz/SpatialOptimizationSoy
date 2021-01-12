@@ -132,6 +132,8 @@ if os.path.exists(settings.get_file_soy()):
         settings.printFileCreated(settings.get_file_soy_cerrado())
 elif not os.path.isfile(settings.get_file_soy_amazon()) or not os.path.isfile(settings.get_file_soy_cerrado()):
     print("The file " + settings.getEnding(settings.get_file_soy()) + " is required to generate the data for amazon and cerrado.")
+else:
+    print("The files for soy in amazon and cerrado are already created.")
 
 '''
 # read potential yield maps from asc file
