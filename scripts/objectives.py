@@ -29,6 +29,10 @@ print(np.shape(amazon_landuse))
 cerrado_landuse = [cerrado_landuse]
 print(np.shape(cerrado_landuse))
 
+def calculate_water_footprint(landuse_map, soy_map, precipitation, area):
+    soy_yield = calc_soy_yield(landuse_map,soy_map,area)
+    
+    pass
 
 def calculate_above_ground_biomass(landuse_map_in,area): 
     # loop over the individuals in the population
