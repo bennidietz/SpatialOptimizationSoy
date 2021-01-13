@@ -1,4 +1,4 @@
-import settings
+import settings, debugger_helper
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -46,28 +46,28 @@ if os.path.isfile(settings.get_file_landuse()):
 
         # plot reclassified landuse map
         f2, ax2 = plt.subplots(1)
-        cmap2 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e", "#000000"])
+        cmap2 = ListedColormap(["#b3cc33","#10773e","#be94e8","#1b5ee4","#000000"])
         legend_landuse2 = [
                 mpatches.Patch(color="#b3cc33",label = 'Soy'),
+                mpatches.Patch(color="#10773e",label = 'Not soy'),
                 mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
                 mpatches.Patch(color="#1b5ee4",label = 'Water'),
-                mpatches.Patch(color="#10773e",label = 'Not soy'),
                 mpatches.Patch(color="#000000",label = 'No data')
         ]
 
-        cmap3 = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e"])
+        cmap3 = ListedColormap(["#b3cc33","#10773e", "#be94e8","#1b5ee4"])
         legend_landuse3 = [
                 mpatches.Patch(color="#b3cc33",label = 'Soy'),
+                mpatches.Patch(color="#10773e",label = 'Not soy'),
                 mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
-                mpatches.Patch(color="#1b5ee4",label = 'Water'),
-                mpatches.Patch(color="#10773e",label = 'Not soy')
+                mpatches.Patch(color="#1b5ee4",label = 'Water')
         ]
 
         # create empty map
         rows = landuse_original.shape[0]
         cols = landuse_original.shape[1]
         landuse_reclass = np.zeros((rows,cols),dtype= 'uint8')
-        # reclassify landuse map: 1 = soy; 2 = urban area; 3 = water; 4 = not soy; 5 = no data
+        # reclassify landuse map: 1 = soy; 2 = not soy; 3 = water; 4 = urban area; 5 = no data
         landuse_reclass[landuse_original == 1] = 2 # cerrado -> not soy
         landuse_reclass[landuse_original == 2] = 2 # fallow/cotton -> not soy
         landuse_reclass[landuse_original == 3] = 2 # forest -> not soy
@@ -82,6 +82,7 @@ if os.path.isfile(settings.get_file_landuse()):
         landuse_reclass[landuse_original == 12] = 3 # water -> water
         landuse_reclass[landuse_original == 13] = 2 # secondary vegetation -> not soy
         landuse_reclass[landuse_original == 15] = 5 # no data -> no data
+        print(debugger_helper.getOccurancies(landuse_reclass))
 
         im1 = plt.imshow(landuse_original, interpolation='none',
         cmap=cmap2, vmin = 0.5, vmax = 15.5)
@@ -92,17 +93,19 @@ if os.path.isfile(settings.get_file_landuse()):
             borderaxespad=0.)
         plt.imsave(settings.get_file_landuse_reclass(), landuse_reclass, format = "tiff", cmap = cmap2)
 
-        amazon_crop = landuse_reclass[900:1500, 600:1600]
+        amazon_crop = landuse_reclass[1300:1700, 2750:3150] # 400 x 400
         plt.imsave(settings.get_file_reclass_amazon_tif(), amazon_crop, format='tiff', cmap=cmap3)
         settings.printFileCreated(settings.get_file_reclass_amazon_tif())
         np.save(settings.get_file_reclass_amazon_npy(), amazon_crop)
+        print(debugger_helper.getOccurancies(amazon_crop))
         settings.printFileCreated(settings.get_file_reclass_amazon_npy())
 
-        cerrado_crop = landuse_reclass[3700:4300, 4000:5000]
+        cerrado_crop = landuse_reclass[3700:4100, 4000:4400] # 400 x 400
         plt.imsave(settings.get_file_reclass_cerrado_tif(), cerrado_crop, format='tiff', cmap=cmap3)
         settings.printFileCreated(settings.get_file_reclass_cerrado_tif())
         np.save(settings.get_file_reclass_cerrado_npy(), cerrado_crop)
-        settings.printFileCreated(settings.get_file_reclass_cerrado_npy_tif())
+        print(debugger_helper.getOccurancies(cerrado_crop))
+        settings.printFileCreated(settings.get_file_reclass_cerrado_npy())
 
         plt.show()
     else:
@@ -116,19 +119,21 @@ if os.path.exists(settings.get_file_soy()):
     if os.path.exists(settings.get_file_soy_amazon()):
         settings.printFileAlreadyExists(settings.get_file_soy_amazon())
     else:
-        soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[900:1500,600:1600]
+        soy_pot_yield_amazon = np.loadtxt(settings.get_file_soy(), skiprows=6)[1300:1700, 2750:3150] # 400 x 400
         with open(settings.get_file_soy_amazon(), 'wb') as output:
             pickle.dump(soy_pot_yield_amazon, output, pickle.HIGHEST_PROTOCOL)
         settings.printFileCreated(settings.get_file_soy_amazon())
     if os.path.exists(settings.get_file_soy_cerrado()):
         settings.printFileAlreadyExists(settings.get_file_soy_cerrado())
     else:
-        soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[3700:4300,4000:5000]
+        soy_pot_yield_cerrado = np.loadtxt(settings.get_file_soy(),skiprows=6)[3700:4100, 4000:4400] # 400 x 400
         with open(settings.get_file_soy_cerrado(), 'wb') as output:
             pickle.dump(soy_pot_yield_cerrado, output, pickle.HIGHEST_PROTOCOL)
         settings.printFileCreated(settings.get_file_soy_cerrado())
 elif not os.path.isfile(settings.get_file_soy_amazon()) or not os.path.isfile(settings.get_file_soy_cerrado()):
     print("The file " + settings.getEnding(settings.get_file_soy()) + " is required to generate the data for amazon and cerrado.")
+else:
+    print("The files for soy in amazon and cerrado are already created.")
 
 '''
 # read potential yield maps from asc file

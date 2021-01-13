@@ -1,7 +1,8 @@
 .DS_Store
-data
+.vscode
+data/base
 scripts/__pycache__
 
-*.mat
+scripts/external/__pycache__/
 
-*.nc
+data/soy_new.asc

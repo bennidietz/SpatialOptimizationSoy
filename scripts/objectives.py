@@ -12,7 +12,7 @@ def calc_soy_yield(landuse_map,soy_map,area):
 
     # loop over the individuals in the population
     for land_use_map in landuse_map:
-        soy_yield = np.where(land_use_map == 4, soy_map*area, 0)
+        soy_yield = np.where(land_use_map == 1, soy_map*area, 0)
         # all soy yield
         soyYield.append(np.sum(soy_yield))
 
@@ -24,11 +24,11 @@ amazon_landuse = np.load(settings.get_file_reclass_amazon_npy())
 cerrado_landuse = np.load(settings.get_file_reclass_cerrado_npy())
 cellArea = 6.25
 amazon_landuse = [amazon_landuse]
-print(np.shape(amazon_landuse))
-
 cerrado_landuse = [cerrado_landuse]
-print(np.shape(cerrado_landuse))
 
+def calculate_water_footprint(landuse_map, soy_map, prec_data, temp_data, area):
+    soy_yield = calc_soy_yield(landuse_map, soy_map, area)[0]
+    return
 
 def calculate_above_ground_biomass(landuse_map_in,area): 
     # loop over the individuals in the population
@@ -61,11 +61,12 @@ def calculate_above_ground_biomass(landuse_map_in,area):
 
     return(np.array(all_emissions))
 
- # read input data for objectives
+# read input data for objectives
 with open(settings.get_file_soy_amazon(), 'rb') as output:
+    prec_amazon = np.load(settings.get_file_prec_amazon_interpolated())
+    temp_amazon = np.load(settings.get_file_temp_amazon_interpolated())
     soy_pot_yield = pickle.load(output)
     yields_test =  calc_soy_yield(amazon_landuse, soy_pot_yield, cellArea)
-    print("hier: " + str(yields_test))
-
-'''biomasses_test = calculate_above_ground_biomass(landuse,6.25)
-print(biomasses_test)'''
+    waterfootprint_test =  calculate_water_footprint(amazon_landuse, soy_pot_yield, prec_amazon, temp_amazon, cellArea)
+    print("Amazon crop - total yield: " + str(yields_test))
+    print("Amazon crop - water footprint: " + str(waterfootprint_test))
