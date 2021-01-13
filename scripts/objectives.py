@@ -5,6 +5,9 @@ default_directory = os.path.dirname(os.path.realpath(__file__))
 import numpy as np
 from external import compute_genome
 import pickle
+import math as m
+import csv
+import pandas as pd
 
 # calculate soy yield of landuse
 def calc_soy_yield(landuse_map,soy_map,area):
@@ -26,8 +29,65 @@ cellArea = 6.25
 amazon_landuse = [amazon_landuse]
 cerrado_landuse = [cerrado_landuse]
 
+# read precipitation data from amazon and cerrado
+prec_amazon = np.load(settings.get_file_prec_amazon())
+prec_cerrado = np.load(settings.get_file_prec_cerrado())
+
 def calculate_water_footprint(landuse_map, soy_map, prec_data, temp_data, area):
-    soy_yield = calc_soy_yield(landuse_map, soy_map, area)[0]
+    # soy_yield = calc_soy_yield(landuse_map, soy_map, area)[0]
+    soy_yield = 4000 #tonnen pro jahr/Zelle --> Nur Beispiel
+
+    # Calculate evaporation Amazon
+    waterEvaporationAmazon = []
+    for row in prec_amazon:
+        valueAm = row * 20 /100
+        waterEvaporationAmazon.append(valueAm)
+
+    # Calculate evaporation Cerrado
+    waterEvaporationCerrado = []
+    for row in prec_cerrado:
+        valueCerr = row * 20 /100
+        waterEvaporationCerrado.append(valueCerr)
+
+    # Calculating waterincorporation 
+    soy_yieldGram = soy_yield * 1000000 # calculating tons in gram
+    waterIncGram = soy_yieldGram * 0.085 # gram * amount of water
+    waterInc = waterIncGram / 1000000 # convert gram to tons
+
+    # Calculating the green waterfootprint: Evaporation + waterincorporation --> Amazon
+    EvWIAmazon = []
+    for i in waterEvaporationAmazon:
+        value2 = i + waterInc
+        EvWIAmazon.append(value2)
+
+    # Calculating the green waterfootprint: Evaporation + waterincorporation --> Cerrado
+    EvWICerrado = []
+    for i in waterEvaporationCerrado:
+        value2 = i + waterInc
+        EvWICerrado.append(value2)
+
+    # Sum values in array for the green waterfootprint: Amazon
+    greenWFAm = np.sum(EvWIAmazon)
+    # Sum values in array for the green waterfootprint: Cerrado
+    greenWFCerr = np.sum(EvWICerrado)
+
+    ######## For calculating the blue water footprint Amazon: #########
+    ## Precipitation divided with 2 for the lost return flow
+    lostRFAm = []
+    for row in prec_amazon:
+        lostreturnflow = row / 2
+        lostRFAm.append(lostreturnflow)
+    lostReturnFlowAm = np.sum(lostRFAm)
+    blueWFAmazon = greenWFAm + lostReturnFlowAm
+
+    ## For calculating the blue water footprint Cerrado:
+    ## Precipitation divided with 2 for the lost return flow
+    lostRFCerr = []
+    for row in prec_cerrado:
+        lostreturnflowCerr = row / 2
+        lostRFCerr.append(lostreturnflowCerr)
+    lostReturnFlowCerr = np.sum(lostRFCerr)
+    blueWFCerrado = greenWFCerr + lostReturnFlowCerr
     return
 
 def calculate_above_ground_biomass(landuse_map_in,area): 
@@ -61,12 +121,12 @@ def calculate_above_ground_biomass(landuse_map_in,area):
 
     return(np.array(all_emissions))
 
-# read input data for objectives
+# # read input data for objectives
 with open(settings.get_file_soy_amazon(), 'rb') as output:
     prec_amazon = np.load(settings.get_file_prec_amazon_interpolated())
     temp_amazon = np.load(settings.get_file_temp_amazon_interpolated())
-    soy_pot_yield = pickle.load(output)
-    yields_test =  calc_soy_yield(amazon_landuse, soy_pot_yield, cellArea)
-    waterfootprint_test =  calculate_water_footprint(amazon_landuse, soy_pot_yield, prec_amazon, temp_amazon, cellArea)
-    print("Amazon crop - total yield: " + str(yields_test))
+    # soy_pot_yield = pickle.load(output)
+    # yields_test =  calc_soy_yield(amazon_landuse, soy_pot_yield, cellArea)
+    waterfootprint_test =  calculate_water_footprint(amazon_landuse, output, prec_amazon, temp_amazon, cellArea)
+    # print("Amazon crop - total yield: " + str(yields_test))
     print("Amazon crop - water footprint: " + str(waterfootprint_test))
