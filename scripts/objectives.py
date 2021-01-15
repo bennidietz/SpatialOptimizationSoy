@@ -5,6 +5,9 @@ default_directory = os.path.dirname(os.path.realpath(__file__))
 import numpy as np
 from external import compute_genome
 import pickle
+import math as m
+import csv
+import pandas as pd
 
 # calculate soy yield of landuse
 def calc_soy_yield(landuse_map,soy_map,area):
@@ -28,7 +31,37 @@ cerrado_landuse = [cerrado_landuse]
 
 def calculate_water_footprint(landuse_map, soy_map, prec_data, temp_data, area):
     soy_yield = calc_soy_yield(landuse_map, soy_map, area)[0]
-    return
+
+    # Calculate evaporation
+    waterEvaporation = []
+    for row in prec_data:
+        value = row * 20 /100
+        waterEvaporation.append(value)
+
+    # Calculating waterincorporation 
+    soy_yieldGram = soy_yield * 1000000 # calculating tons in gram
+    waterIncGram = soy_yieldGram * 0.085 # gram * amount of water
+    waterInc = waterIncGram / 1000000 # convert gram to tons
+
+    # Calculating the green waterfootprint: Evaporation + waterincorporation
+    EvWI = []
+    for i in waterEvaporation:
+        value2 = i + waterInc
+        EvWI.append(value2)
+
+    # Sum values in array for the green waterfootprint
+    greenWF = np.sum(EvWI)
+
+    ######## For calculating the blue water footprint
+    ## Precipitation divided with 2 for the lost return flow
+    lostRF = []
+    for row in prec_data:
+        lostreturnflow = row / 2
+        lostRF.append(lostreturnflow)
+    lostReturnFlow = np.sum(lostRF)
+    blueWF = greenWF + lostReturnFlow
+    
+    return blueWF
 
 def calculate_above_ground_biomass(landuse_map_in,area): 
     # loop over the individuals in the population
@@ -61,7 +94,7 @@ def calculate_above_ground_biomass(landuse_map_in,area):
 
     return(np.array(all_emissions))
 
-# read input data for objectives
+# # read input data for objectives
 with open(settings.get_file_soy_amazon(), 'rb') as output:
     prec_amazon = np.load(settings.get_file_prec_amazon_interpolated())
     temp_amazon = np.load(settings.get_file_temp_amazon_interpolated())
