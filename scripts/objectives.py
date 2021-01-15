@@ -61,7 +61,7 @@ def calculate_water_footprint(landuse_map, soy_map, prec_data, temp_data, area):
     lostReturnFlow = np.sum(lostRF)
     blueWF = greenWF + lostReturnFlow
     
-    return blueWF
+    return blueWF + greenWF
 
 def calculate_above_ground_biomass(landuse_map_in,area): 
     # loop over the individuals in the population
