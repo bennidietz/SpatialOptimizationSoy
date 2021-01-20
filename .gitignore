@@ -6,3 +6,7 @@ scripts/__pycache__
 scripts/external/__pycache__/
 
 data/soy_new.asc
+
+scripts/.RData
+
+scripts/.Rhistory

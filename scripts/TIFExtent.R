@@ -34,12 +34,12 @@ getAbsoulteCoordinates <- function(x, y) {
   return (point)
 }
 
-amazon_topLeft = getAbsoulteCoordinates(600, 900)
-amazon_bottomRight = getAbsoulteCoordinates(1600, 1500)
+amazon_topLeft = getAbsoulteCoordinates(2750, 1300)
+amazon_bottomRight = getAbsoulteCoordinates(3150, 1700)
 bbox_amazon = c(amazon_topLeft, amazon_bottomRight)
 
 cerrado_topLeft = getAbsoulteCoordinates(4000, 3700)
-cerrado_bottomRight = getAbsoulteCoordinates(5000, 4300)
+cerrado_bottomRight = getAbsoulteCoordinates(4400, 4100)
 bbox_cerrado = c(cerrado_topLeft, cerrado_bottomRight)
 
 
