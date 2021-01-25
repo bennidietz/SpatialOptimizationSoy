@@ -37,7 +37,7 @@ def visualizeData(np_array, np_array_interpolated, cmap):
     plt.colorbar(scalarmappaple)
     plt.show()
 
-visualizeData(prec_amazon, prec_inter_amazon, cmap_prec)
-#visualizeData(prec_cerrado, prec_inter_cerrado, cmap_prec)
+#visualizeData(prec_amazon, prec_inter_amazon, cmap_prec)
+visualizeData(prec_cerrado, prec_inter_cerrado, cmap_prec)
 #visualizeData(temp_amazon, temp_inter_amazon, cmap_temp)
 #visualizeData(temp_cerrado, temp_inter_cerrado, cmap_temp)

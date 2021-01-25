@@ -21,6 +21,7 @@ def initialize_spatial(pop_size, landuse_map_path):
 
         print("Interation " + str(i) + ":")
         print("Initial state: " + str(debugger_helper.getOccurancies(landuse_map_ini)))
+        print("Initial state landuse map : " + str(debugger_helper.getOccurancies(landuse_map_in)))
 
         # take window average of random map to create larger patches
         for x in range(0,cols-1):
@@ -49,11 +50,11 @@ def initialize_spatial(pop_size, landuse_map_path):
         all_landusemaps.append(landuse_map_ini) 
     return np.array(all_landusemaps)
 
-maps = initialize_spatial(3, settings.get_file_reclass_amazon_npy())
+'''maps = initialize_spatial(3, settings.get_file_reclass_amazon_npy())
 f, axes = plt.subplots(1,3)
 
 cmap = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e"])
 for amap, ax in zip(maps, axes):
     im = ax.imshow(amap,interpolation='none', cmap=cmap,vmin = 0.5, vmax = 10.5)
 plt.colorbar(im, orientation='horizontal')
-plt.show()
+plt.show()'''

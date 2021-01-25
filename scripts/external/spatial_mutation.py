@@ -1,6 +1,6 @@
 import numpy as np
 from pymoo.model.mutation import Mutation
-from compute_genome import getNbh, determine_patch_elements,create_patch_ID_map
+from external import compute_genome
 
 # function to randomly change a certain patch
 def random_reset_mutation(genome_in, point_mutation_prob):

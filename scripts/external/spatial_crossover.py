@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from compute_genome import create_patch_ID_map
+from external import compute_genome
 from pymoo.model.crossover import Crossover
 
 class SpatialOnePointCrossover(Crossover):
@@ -23,8 +23,8 @@ class SpatialOnePointCrossover(Crossover):
         for _ in range(n_matings):
 
             # create patch map and genome with CoMOLA functions 
-            patches_parent1, genome_parent1 = create_patch_ID_map(X[0][_],0,[8,9],"True")
-            patches_parent2, genome_parent2 = create_patch_ID_map(X[1][_],0,[8,9],"True")
+            patches_parent1, genome_parent1 = compute_genome.create_patch_ID_map(X[0][_],0,[8,9],"True")
+            patches_parent2, genome_parent2 = compute_genome.create_patch_ID_map(X[1][_],0,[8,9],"True")
                         
             # define number of cuts
             num_crossover_points = self.n_points
