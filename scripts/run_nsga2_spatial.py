@@ -10,22 +10,22 @@ factory.get_mutation_options = spatial_extention_pymoo._new_get_mutation_options
 Crossover.do = spatial_extention_pymoo._new_crossover_do
 
 import numpy as np
-import pickle
+from pickle5 import pickle
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from pymoo.util.misc import stack
 from pymoo.model.problem import Problem
-from calculate_objectives import calculate_tot_yield, calculate_water_footprint, calc
+import objectives
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 from pymoo.factory import get_termination
 from pymoo.optimize import minimize
-from _default_directory import default_directory
 
 cell_area = 2.5 * 2.5 # in hectares
 
 # read input data for objectives
-with open(default_directory + "/Objectives/soy_potential_yield_example.pkl", 'rb') as output:
+# TODO: do for both amazon and cerrado
+with open(settings.get_file_soy_amazon(), 'rb') as output:
     soy_pot_yield = pickle.load(output)
 
 prec_amazon = np.load(settings.get_file_prec_amazon_interpolated())
@@ -36,7 +36,7 @@ temp_cerrado = np.load(settings.get_file_temp_cerrado_interpolated())
 class MyProblem(Problem):
 
     def __init__(self):
-        super().__init__(n_var=100,
+        super().__init__(n_var=400,
                          n_obj=2,
                          n_constr=0,
                          xl=0.0,
@@ -44,9 +44,13 @@ class MyProblem(Problem):
 
     # define the objective functions
     def _evaluate(self, X, out, *args, **kwargs):
-        f1 = -calculate_tot_yield(X[:], soy_pot_yield, cell_area)
-        f2 = -calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, temp_amazon, cell_area)
+        f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area)
+        f2 = -objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
         out["F"] = np.column_stack([f1, f2])
+        #try:
+        #except Exception as identifier:
+         #   f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area)
+          #  f2 = -objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
 
 problem = MyProblem()
 print(problem)
@@ -57,9 +61,9 @@ from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 
 algorithm = NSGA2(
-    pop_size=70,
+    pop_size=71,
     n_offsprings=10,
-    sampling=get_sampling("spatial", default_dir = default_directory),
+    sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_amazon_npy()),
     crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
     mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
     point_mutation_probability = 0.015),
@@ -88,7 +92,7 @@ print(res.F)
 
 #visualization
 
-f1, ax1 = plt.subplots(1)
+'''f1, ax1 = plt.subplots(1)
 im1 = plt.scatter(-res.F[:,0],-res.F[:,1])
 ax1.set_title("Objective Space")
 ax1.set_xlabel('Total yield [tonnes]')
@@ -191,4 +195,4 @@ ax5.plot(n_gen, hv, '-o', markersize=4, linewidth=2)
 ax5.set_xlabel("Generation")
 ax5.set_ylabel("Hypervolume")
 plt.savefig(default_directory+"/figures/hypervolume.png")
-plt.show()
+plt.show()'''
