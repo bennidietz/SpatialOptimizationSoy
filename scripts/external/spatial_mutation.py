@@ -28,7 +28,7 @@ class SpatialNPointMutation(Mutation):
         for i in X:
             # performe mutation with certain probability
             if np.random.uniform(0, 1) < self.prob: # get genome
-                patches, genome = create_patch_ID_map(i, 0, [8, 9], "True")
+                patches, genome = compute_genome.create_patch_ID_map(i, 0, [8, 9], "True")
                 # perform mutation
                 mutated_genome = random_reset_mutation(genome,
                                 self.point_mutation_probability)

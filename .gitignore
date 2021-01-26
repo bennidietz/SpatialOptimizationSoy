@@ -1,5 +1,4 @@
 .DS_Store
-.vscode
 data/base
 scripts/__pycache__
 

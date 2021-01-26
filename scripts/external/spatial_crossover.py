@@ -51,22 +51,22 @@ class SpatialOnePointCrossover(Crossover):
                 if (j % 2) == 0:
                     genome_child2[i] = 0.
             
-        rows = shape_landusemaps[0]
-        cols = shape_landusemaps[1]
+            rows = shape_landusemaps[0]
+            cols = shape_landusemaps[1]
 
-        # fill in genome in patches
-        child1 = patches_parent1
-        child2 = patches_parent2
+            # fill in genome in patches
+            child1 = patches_parent1
+            child2 = patches_parent2
 
-        for x in range(0, cols):
-            for y in range(0, rows):
-                if child1[x, y] != 0:
-                    child1[x, y] = genome_child1[child1[x, y] - 1]
-                    child2[x, y] = genome_child2[child2[x, y] - 1]
+            for x in range(0, cols):
+                for y in range(0, rows):
+                    if child1[x, y] != 0:
+                        child1[x, y] = genome_child1[child1[x, y] - 1]
+                        child2[x, y] = genome_child2[child2[x, y] - 1]
 
-        child1 = np.where(child1 == 0, X[1][_], child1)
-        child2 = np.where(child2 == 0, X[0][_], child2)
-        child_landuse_maps1.append(child1)
-        child_landuse_maps2.append(child2)
+            child1 = np.where(child1 == 0, X[1][_], child1)
+            child2 = np.where(child2 == 0, X[0][_], child2)
+            child_landuse_maps1.append(child1)
+            child_landuse_maps2.append(child2)
 
         return np.array([np.array(child_landuse_maps1),np.array(child_landuse_maps2)])
