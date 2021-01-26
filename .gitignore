@@ -1,0 +1,14 @@
+.DS_Store
+.vscode
+data/base
+scripts/__pycache__
+
+scripts/external/__pycache__/
+
+data/soy_new.asc
+
+scripts/.RData
+
+scripts/.Rhistory
+
+scripts/mt_2017_v3_1_reprojection.tif
