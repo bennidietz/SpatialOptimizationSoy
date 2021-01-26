@@ -45,7 +45,7 @@ class MyProblem(Problem):
     # define the objective functions
     def _evaluate(self, X, out, *args, **kwargs):
         f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area)
-        f2 = -objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
+        f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
         out["F"] = np.column_stack([f1, f2])
         #try:
         #except Exception as identifier:
@@ -60,10 +60,20 @@ print(problem)
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 
-algorithm = NSGA2(
-    pop_size=71,
+algorithm_amazon = NSGA2(
+    pop_size=70,
     n_offsprings=10,
     sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_amazon_npy()),
+    crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
+    mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
+    point_mutation_probability = 0.015),
+    eliminate_duplicates=False
+)
+
+algorithm_cerrado = NSGA2(
+    pop_size=70,
+    n_offsprings=10,
+    sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_cerrado_npy()),
     crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
     mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
     point_mutation_probability = 0.015),
@@ -79,16 +89,27 @@ termination = get_termination("n_gen", 50)
 #optimization
 
 from pymoo.optimize import minimize
-res = minimize(problem,
-    algorithm,
+res_amazon = minimize(problem,
+    algorithm_amazon,
     termination,
     seed=1,
     save_history=True,
     verbose=True)
 
-print(res)
-print(res.X)
-print(res.F)
+res_cerrado = minimize(problem,
+    algorithm_cerrado,
+    termination,
+    seed=1,
+    save_history=True,
+    verbose=True)
+
+print(res_amazon)
+print(res_amazon.X)
+print(res_amazon.F)
+
+print(res_cerrado)
+print(res_cerrado.X)
+print(res_cerrado.F)
 
 #visualization
 
