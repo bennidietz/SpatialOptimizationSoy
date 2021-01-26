@@ -50,6 +50,23 @@ class MyProblem(Problem):
         f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
         out["F"] = np.column_stack([f1, f2])
 
+'''class MyProblem2(Problem):
+
+    def __init__(self):
+        super().__init__(n_var=100,
+                         n_obj=2,
+                         n_constr=0,
+                         xl=0.0,
+                         xu=1.0)
+
+    #TODO: Implement constraint: 3362000 Tonnes
+
+    # define the objective functions
+    def _evaluate(self, X, out, *args, **kwargs):
+        f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield[0:100 ,0:100], cell_area)
+        f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield[0:100 ,0:100], prec_amazon[0:100 ,0:100], cell_area)
+        out["F"] = np.column_stack([f1, f2])'''
+
 problem = MyProblem()
 print(problem)
 
@@ -57,6 +74,16 @@ print(problem)
 
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.factory import get_sampling, get_crossover, get_mutation
+
+""" algorithm_tutorial = NSGA2(
+    pop_size=80,
+    n_offsprings=10,
+    sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_wholeArea_npy()),
+    crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
+    mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
+    point_mutation_probability = 0.015),
+    eliminate_duplicates=False
+) """
 
 algorithm_amazon = NSGA2(
     pop_size=70,
@@ -87,6 +114,13 @@ termination = get_termination("n_gen", 50)
 #optimization
 
 from pymoo.optimize import minimize
+'''res_tutorial = minimize(MyProblem2(),
+    algorithm_tutorial,
+    termination,
+    seed=1,
+    save_history=True,
+    verbose=True)'''
+
 res_amazon = minimize(problem,
     algorithm_amazon,
     termination,
