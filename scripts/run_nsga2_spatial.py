@@ -111,17 +111,6 @@ def plot_objective_space(minimizationResults):
 
 plot_objective_space(res_cerrado)
 
-print(res_amazon)
-print(res_amazon.X)
-print(res_amazon.F)
-
-print(res_cerrado)
-print(res_cerrado.X)
-print(res_cerrado.F)
-
-
-
-
 #visualization
 
 def plot_landuse_configuration(minimizationResults, regionName):
@@ -196,7 +185,7 @@ def objectives_per_generation(res, regionName):
     # add here the generations you want to see in the plot
     generations2plot = [1,2,3]
     #generations2plot = [10,20,30,40,50]
-    
+
     # make the plot
     fig4, ax4 = plt.subplots(1)
     # i - 1, because generation 1 has index 0
