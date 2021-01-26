@@ -30,6 +30,9 @@ amazon_landuse = [amazon_landuse]
 cerrado_landuse = [cerrado_landuse]
 
 def calculate_water_footprint(realization, soy_map, prec_data, area):
+    '''
+    calculate water footprint for each realization
+    '''
     soyYieldArray = calc_soy_yield(realization, soy_map, area)
     waterfootprints = []
     #print("In calculation of water footprint soy_yield has length " + str(len(soy_yield)))
