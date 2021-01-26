@@ -1,7 +1,7 @@
 import numpy as np
-import pickle
+import pickle, os
 from compute_genome import create_patch_ID_map
-from _default_directory import default_directory
+default_directory = os.path.dirname(os.path.realpath(__file__)) + "/.."
 
 # calculate the total yield for sugarcane, soy, cotton and pasture
 def calculate_tot_yield(landuse_map_in, sugarcane_map,soy_map,cotton_map,

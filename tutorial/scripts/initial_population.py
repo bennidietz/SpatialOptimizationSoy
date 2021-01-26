@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-from _default_directory import default_directory
+import os
+default_directory = os.path.dirname(os.path.realpath(__file__)) + "/.."
 
 # make initial population for genetic algorithm
 def initialize_spatial(pop_size,default_directory):

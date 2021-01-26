@@ -19,7 +19,8 @@ from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 from pymoo.factory import get_termination
 from pymoo.optimize import minimize
-from _default_directory import default_directory
+import os
+default_directory = os.path.dirname(os.path.realpath(__file__)) + "/.."
 
 cell_area = 2.5 * 2.5 # in hectares
 
