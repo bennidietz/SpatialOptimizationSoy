@@ -16,6 +16,8 @@ file_reclass_amazon_npy = "landuse_amazon.npy"
 file_reclass_cerrado_tif = "reclass_cerrado.tif"
 file_reclass_cerrado_npy = "landuse_cerrado.npy"
 
+file_reclass_wholeArea_npy = "landuse_map_in.npy"
+
 file_soy = "soy_new.asc"
 file_soy_amazon = "soy_potential_yield_amazon.pkl"
 file_soy_cerrado = "soy_potential_yield_cerrado.pkl"
@@ -55,6 +57,7 @@ def get_file_reclass_amazon_tif(): return data_directory + "/" + file_reclass_am
 def get_file_reclass_amazon_npy(): return data_directory + "/" + file_reclass_amazon_npy
 def get_file_reclass_cerrado_tif(): return data_directory + "/" + file_reclass_cerrado_tif
 def get_file_reclass_cerrado_npy(): return data_directory + "/" + file_reclass_cerrado_npy
+def get_file_reclass_wholeArea_npy(): return data_directory + "/base/" + file_reclass_wholeArea_npy
 def get_file_soy(): return data_directory + "/" + file_soy
 def get_file_soy_amazon(): return data_directory + "/" + file_soy_amazon
 def get_file_soy_cerrado(): return data_directory + "/" + file_soy_cerrado
