@@ -114,7 +114,7 @@ def _new_crossover_do(self, problem, pop, parents, **kwargs):
         # flatten the array to become a 2d-array
 
         if len(X.shape)>3:
-            X = X.reshape(10,100, X.shape[-1])
+            X = X.reshape(10,X.shape[-2], X.shape[-1])
         else:
             X = X.reshape(-1, X.shape[-1])
         # create a population object
