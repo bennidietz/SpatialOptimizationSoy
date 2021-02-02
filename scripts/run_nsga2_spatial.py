@@ -35,23 +35,24 @@ temp_cerrado = np.load(settings.get_file_temp_cerrado_interpolated())
 
 class MyProblem(Problem):
 
-    def __init__(self):
+    def __init__(self, current_soy_yield):
+        self.current_soy_yield = current_soy_yield
         super().__init__(n_var=400,
                          n_obj=2,
                          n_constr=0,
                          xl=0.0,
                          xu=1.0)
 
-    #TODO: Implement constraint: 3362000 Tonnes
 
     # define the objective functions
     def _evaluate(self, X, out, *args, **kwargs):
         f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area)
-        f2 = -objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
+        f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
+        # soy yield should be above 76154 / 2 = 38077 Tonnes
+        g1 =  -objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)+self.current_soy_yield/2
+        # soy yield should be below 76154 * 2 = 152308 Tonnes
+        #g2 =  objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)-self.current_soy_yield*2
         out["F"] = np.column_stack([f1, f2])
-
-problem = MyProblem()
-print(problem)
 
 #algorithm
 
@@ -85,21 +86,21 @@ from pymoo.factory import get_termination
 termination = get_termination("n_gen", 3)
 
 #optimization
-
 from pymoo.optimize import minimize
-res_amazon = minimize(problem,
+res_amazon = minimize(MyProblem(76154.6),
     algorithm_amazon,
     termination,
     seed=1,
     save_history=True,
     verbose=True)
 
-res_cerrado = minimize(problem,
+res_cerrado = minimize(MyProblem(578897.6),
     algorithm_cerrado,
     termination,
     seed=1,
     save_history=True,
     verbose=True)
+
 
 def plot_objective_space(minimizationResults):
     f1, ax1 = plt.subplots(1)
@@ -116,16 +117,16 @@ def plot_objective_space(minimizationResults):
 def plot_design_objective_space(res):
     # Plot the design space
     f1, ax1 = plt.subplots(1)
-    ax1.scatter(-res.X[:,0], -res.X[:,1], s=30, fc='none', ec='r')
+    ax1.scatter(-res.X[:,0], res.X[:,1], s=30, fc='none', ec='r')
     ax1.set_title('design space')
     ax1.set_xlabel('x1')
     ax1.set_ylabel('x2')
-    ax1.set_xlim(-2, 2)
-    ax1.set_ylim(-2, 2)
+    ax1.set_xlim(-5, 0)
+    ax1.set_ylim(0, 7)
     f1.savefig('design_space.png')
     # Plot the objective space
     f2, ax2 = plt.subplots(1)
-    ax2.scatter(-res.F[:,0], -res.F[:,1], s=30, fc='none', ec='k')
+    ax2.scatter(-res.F[:,0], res.F[:,1], s=30, fc='none', ec='k')
     ax2.set_title('objective space')
     ax2.set_xlabel('f1')
     ax2.set_ylabel('f2')
@@ -150,12 +151,12 @@ def plot_landuse_configuration(minimizationResults, regionName):
     # Plot them next to each other
     f2, (ax2a, ax2b) = plt.subplots(1,2, figsize=(9,5))
     im2a = ax2a.imshow(landuse_max_yield,interpolation='None',
-    cmap=cmap,vmin=0.5,vmax=10.5)
+    cmap=cmap,vmin=0.5,vmax=4.5)
     ax2a.set_title('Landuse map \nmaximized total yield', fontsize=10)
     ax2a.set_xlabel('Column #')
     ax2a.set_ylabel('Row #')
     im2b = ax2b.imshow(landuse_min_waterfootprint,interpolation='None',
-    cmap=cmap,vmin=0.5,vmax=10.5)
+    cmap=cmap,vmin=0.5,vmax=4.5)
     ax2b.set_title('Landuse map \nminimized water footprint', fontsize=10)
     ax2b.set_xlabel('Column #')
     plt.legend(handles=legend_landuse,bbox_to_anchor=(1.05, 1), loc=2,
