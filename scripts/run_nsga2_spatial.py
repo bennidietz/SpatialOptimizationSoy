@@ -47,7 +47,7 @@ class MyProblem(Problem):
     # define the objective functions
     def _evaluate(self, X, out, *args, **kwargs):
         f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area)
-        f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
+        f2 = -objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
         out["F"] = np.column_stack([f1, f2])
 
 problem = MyProblem()
@@ -82,7 +82,7 @@ algorithm_cerrado = NSGA2(
 
 from pymoo.factory import get_termination
 
-termination = get_termination("n_gen", 50)
+termination = get_termination("n_gen", 3)
 
 #optimization
 
@@ -106,12 +106,31 @@ def plot_objective_space(minimizationResults):
     im1 = plt.scatter(-minimizationResults.F[:,0],-minimizationResults.F[:,1])
     ax1.set_title("Objective Space")
     ax1.set_xlabel('Total yield [tonnes]')
-    ax1.set_ylabel('Water footprint [tonnes]')
+    ax1.set_ylabel('Water footprint [m^3/Tonnes]')
     plt.show()
 
-plot_objective_space(res_cerrado)
+#plot_objective_space(res_cerrado)
 
 #visualization
+
+def plot_design_objective_space(res):
+    # Plot the design space
+    f1, ax1 = plt.subplots(1)
+    ax1.scatter(-res.X[:,0], -res.X[:,1], s=30, fc='none', ec='r')
+    ax1.set_title('design space')
+    ax1.set_xlabel('x1')
+    ax1.set_ylabel('x2')
+    ax1.set_xlim(-2, 2)
+    ax1.set_ylim(-2, 2)
+    f1.savefig('design_space.png')
+    # Plot the objective space
+    f2, ax2 = plt.subplots(1)
+    ax2.scatter(res.F[:,0], res.F[:,1], s=30, fc='none', ec='k')
+    ax2.set_title('objective space')
+    ax2.set_xlabel('f1')
+    ax2.set_ylabel('f2')
+    f2.savefig('objective_space.png')
+    pass
 
 def plot_landuse_configuration(minimizationResults, regionName):
     import matplotlib.patches as mpatches
@@ -213,9 +232,11 @@ def objectives_per_generation(res, regionName):
     ax5.set_ylabel("Hypervolume")
     plt.savefig(settings.get_default_directory() + "/hypervolume_" + regionName + ".png")
     plt.show()
+    pass
 
-
+plot_design_objective_space(res_amazon)
 plot_landuse_configuration(res_amazon, "amazon")
-plot_landuse_configuration(res_cerrado, "cerrado")
+#plot_landuse_configuration(res_cerrado, "cerrado")
 objectives_per_generation(res_amazon, "amazon")
-objectives_per_generation(res_cerrado, "cerrado")
+#objectives_per_generation(res_cerrado, "cerrado")
+print("1")
