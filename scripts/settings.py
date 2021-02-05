@@ -38,11 +38,11 @@ file_temp_cerrado_interpolated = "temp_cerrado_interpolated.npy"
 
 #bounding boxes
 
-bounding_box_amazon_lat_bounds = [-10.46965, -9.712087]
-bounding_box_amazon_lon_bounds = [-56.458405, -55.70084]
+bounding_box_amazon_lat_bounds = [-9.9014778, -9.712087]
+bounding_box_amazon_lon_bounds = [-55.8902312, -55.70084]
 
-bounding_box_cerrado_lat_bounds = [-15.01504, -14.25748]
-bounding_box_cerrado_lon_bounds = [-54.09101, -53.33345]
+bounding_box_cerrado_lat_bounds = [-14.44687, -14.25748]
+bounding_box_cerrado_lon_bounds = [-53.52284, -53.33345]
 
 #return functions
 

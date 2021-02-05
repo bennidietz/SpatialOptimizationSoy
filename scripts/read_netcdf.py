@@ -117,7 +117,7 @@ print("Stored precipitation and temperature files in data directory.")
 
 #interpolation
 
-n_cells = 400
+n_cells = 100
 
 points = np.array([[0, 0], [0, int((n_cells - 1) / 2)], [0, n_cells - 1], [int((n_cells - 1) / 2), 0], [int((n_cells - 1) / 2), int((n_cells - 1) / 2)], [int((n_cells - 1) / 2), n_cells - 1], [n_cells - 1, 0], [n_cells - 1, int((n_cells - 1) / 2)], [n_cells - 1, n_cells - 1]])
 grid_x, grid_y = np.mgrid[0:n_cells, 0:n_cells]
