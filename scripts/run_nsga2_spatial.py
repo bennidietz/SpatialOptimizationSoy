@@ -114,7 +114,7 @@ def plot_objective_space(minimizationResults):
 
 #visualization
 
-def plot_design_objective_space(res):
+def plot_design_objective_space(res, name):
     # Plot the design space
     f1, ax1 = plt.subplots(1)
     ax1.scatter(-res.X[:,0], res.X[:,1], s=30, fc='none', ec='r')
@@ -123,14 +123,14 @@ def plot_design_objective_space(res):
     ax1.set_ylabel('x2')
     ax1.set_xlim(-5, 0)
     ax1.set_ylim(0, 7)
-    f1.savefig('design_space.png')
+    f1.savefig('design_space_' + name + '.png')
     # Plot the objective space
     f2, ax2 = plt.subplots(1)
     ax2.scatter(-res.F[:,0], res.F[:,1], s=30, fc='none', ec='k')
     ax2.set_title('objective space')
     ax2.set_xlabel('f1')
     ax2.set_ylabel('f2')
-    f2.savefig('objective_space.png')
+    f2.savefig('objective_space_' + name + '.png')
     pass
 
 def plot_landuse_configuration(minimizationResults, regionName):
@@ -235,7 +235,7 @@ def objectives_per_generation(res, regionName):
     plt.show()
     pass
 
-plot_design_objective_space(res_amazon)
+plot_design_objective_space(res_amazon, "amazon")
 plot_landuse_configuration(res_amazon, "amazon")
 #plot_landuse_configuration(res_cerrado, "cerrado")
 objectives_per_generation(res_amazon, "amazon")

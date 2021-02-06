@@ -55,6 +55,6 @@ f, axes = plt.subplots(1,3)
 
 cmap = ListedColormap(["#b3cc33","#be94e8","#1b5ee4", "#10773e"])
 for amap, ax in zip(maps, axes):
-    im = ax.imshow(amap,interpolation='none', cmap=cmap,vmin = 0.5, vmax = 10.5)
+    im = ax.imshow(amap,interpolation='none', cmap=cmap,vmin = 0.5, vmax = 4.5)
 plt.colorbar(im, orientation='horizontal')
 plt.show()'''
