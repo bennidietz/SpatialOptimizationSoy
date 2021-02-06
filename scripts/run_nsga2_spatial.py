@@ -2,6 +2,7 @@ from pymoo import factory
 from pymoo.model.crossover import Crossover
 import spatial_extention_pymoo
 import settings
+import matplotlib.patches as mpatches
 
 # add spatial functions to pymoo library
 factory.get_sampling_options = spatial_extention_pymoo._new_get_sampling_options
@@ -83,7 +84,7 @@ algorithm_cerrado = NSGA2(
 
 from pymoo.factory import get_termination
 
-termination = get_termination("n_gen", 3)
+termination = get_termination("n_gen", 10)
 
 #optimization
 from pymoo.optimize import minimize
@@ -104,7 +105,7 @@ res_cerrado = minimize(MyProblem(578897.6),
 
 def plot_objective_space(minimizationResults):
     f1, ax1 = plt.subplots(1)
-    im1 = plt.scatter(-minimizationResults.F[:,0],-minimizationResults.F[:,1])
+    im1 = plt.scatter(-minimizationResults.F[:,0], minimizationResults.F[:,1])
     ax1.set_title("Objective Space")
     ax1.set_xlabel('Total yield [tonnes]')
     ax1.set_ylabel('Water footprint [m^3/Tonnes]')
@@ -131,10 +132,8 @@ def plot_design_objective_space(res, name):
     ax2.set_xlabel('f1')
     ax2.set_ylabel('f2')
     f2.savefig('objective_space_' + name + '.png')
-    pass
 
 def plot_landuse_configuration(minimizationResults, regionName):
-    import matplotlib.patches as mpatches
     # define the colors of the land use classes
     cmap = ListedColormap(["#b3cc33","#10773e", "#be94e8","#1b5ee4"])
 
@@ -147,7 +146,39 @@ def plot_landuse_configuration(minimizationResults, regionName):
     ]
     # fetch the two extremes of the Pareto front from res.X
     landuse_max_yield = minimizationResults.X[np.argmax(-minimizationResults.F[:,0], axis=0)]
-    landuse_min_waterfootprint = minimizationResults.X[np.argmax(-minimizationResults.F[:,1], axis=0)]
+    landuse_min_waterfootprint = minimizationResults.X[np.argmax(minimizationResults.F[:,1], axis=0)]
+    # Plot them next to each other
+    f2, (ax2a, ax2b) = plt.subplots(1,2, figsize=(9,5))
+    im2a = ax2a.imshow(landuse_max_yield,interpolation='None',
+    cmap=cmap,vmin=0.5,vmax=4.5)
+    ax2a.set_title(regionName + ': Landuse map \nmaximized total yield', fontsize=10)
+    ax2a.set_xlabel('Column #')
+    ax2a.set_ylabel('Row #')
+    im2b = ax2b.imshow(landuse_min_waterfootprint,interpolation='None',
+    cmap=cmap,vmin=0.5,vmax=4.5)
+    ax2b.set_title(regionName + ': Landuse map \nminimized water footprint', fontsize=10)
+    ax2b.set_xlabel('Column #')
+    plt.legend(handles=legend_landuse,bbox_to_anchor=(1.05, 1), loc=2,
+    prop={'size': 9})
+    # Adjust location of the plots to make space for legend and save
+    plt.subplots_adjust(right = 0.6, hspace=0.2)
+    plt.savefig(settings.get_default_directory()+"/landuse_max_" + regionName + ".png",dpi=150)
+    plt.show()
+
+def plot_config_alternative_colors(minimizationResults, regionName):
+    
+    # define the colors of the land use classes
+    cmap = ListedColormap(["#b3cc33","#10773e","#000000","#1b5ee4","#be94e8"])
+    legend_landuse = [
+            mpatches.Patch(color="#b3cc33",label = 'Soy'),
+            mpatches.Patch(color="#10773e",label = 'Not soy'),
+            mpatches.Patch(color="#be94e8",label = 'Urban areas and infrastructure'),
+            mpatches.Patch(color="#1b5ee4",label = 'Water'),
+            mpatches.Patch(color="#000000",label = 'No data')
+    ]
+    # fetch the two extremes of the Pareto front from res.X
+    landuse_max_yield = minimizationResults.X[np.argmax(-minimizationResults.F[:,0], axis=0)]
+    landuse_min_waterfootprint = minimizationResults.X[np.argmax(minimizationResults.F[:,1], axis=0)]
     # Plot them next to each other
     f2, (ax2a, ax2b) = plt.subplots(1,2, figsize=(9,5))
     im2a = ax2a.imshow(landuse_max_yield,interpolation='None',
@@ -196,7 +227,7 @@ def objectives_per_generation(res, regionName):
     ax3a.plot(n_gen, -np.array(obj_1))
     ax3a.set_xlabel("Generation")
     ax3a.set_ylabel("Maximum total yield [tonnes]")
-    ax3b.plot(n_gen, -np.array(obj_2))
+    ax3b.plot(n_gen, np.array(obj_2))
     ax3b.set_xlabel("Generation")
     ax3b.set_ylabel("Water footprint [tonnes]")
     plt.savefig(settings.get_default_directory() + "/objectives_over_generations_" + regionName)
@@ -210,7 +241,7 @@ def objectives_per_generation(res, regionName):
     fig4, ax4 = plt.subplots(1)
     # i - 1, because generation 1 has index 0
     for i in generations2plot:
-        plt.scatter(-f[i-1][:,0],-f[i-1][:,1])
+        plt.scatter(-f[i-1][:,0],f[i-1][:,1])
     ax4.set_xlabel('Total yield [tonnes]')
     ax4.set_ylabel('Water footprint [tonnes]')
     plt.legend(list(map(str, generations2plot)))
