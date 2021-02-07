@@ -40,20 +40,22 @@ class MyProblem(Problem):
         self.current_soy_yield = current_soy_yield
         super().__init__(n_var=400,
                          n_obj=2,
-                         n_constr=0,
+                         n_constr=1,
                          xl=0.0,
                          xu=1.0)
 
 
     # define the objective functions
     def _evaluate(self, X, out, *args, **kwargs):
-        f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area)
-        f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)
+        f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area) # soy yield will be maximized
+        f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area) # water footprint will be minizied
+
         # soy yield should be above 76154 / 2 = 38077 Tonnes
-        g1 =  -objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)+self.current_soy_yield/2
+        g1 =  -f2+self.current_soy_yield/2
         # soy yield should be below 76154 * 2 = 152308 Tonnes
         #g2 =  objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)-self.current_soy_yield*2
         out["F"] = np.column_stack([f1, f2])
+        out["G"] = np.column_stack([g1])
 
 #algorithm
 
@@ -183,12 +185,12 @@ def plot_config_alternative_colors(minimizationResults, regionName):
     f2, (ax2a, ax2b) = plt.subplots(1,2, figsize=(9,5))
     im2a = ax2a.imshow(landuse_max_yield,interpolation='None',
     cmap=cmap,vmin=0.5,vmax=4.5)
-    ax2a.set_title('Landuse map \nmaximized total yield', fontsize=10)
+    ax2a.set_title(regionName + ': Landuse map \nmaximized total yield', fontsize=10)
     ax2a.set_xlabel('Column #')
     ax2a.set_ylabel('Row #')
     im2b = ax2b.imshow(landuse_min_waterfootprint,interpolation='None',
     cmap=cmap,vmin=0.5,vmax=4.5)
-    ax2b.set_title('Landuse map \nminimized water footprint', fontsize=10)
+    ax2b.set_title(regionName + ': Landuse map \nminimized water footprint', fontsize=10)
     ax2b.set_xlabel('Column #')
     plt.legend(handles=legend_landuse,bbox_to_anchor=(1.05, 1), loc=2,
     prop={'size': 9})
