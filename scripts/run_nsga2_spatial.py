@@ -264,7 +264,6 @@ def objectives_per_generation(res, regionName):
     ax5.set_ylabel("Hypervolume")
     plt.savefig(settings.get_default_directory() + "/hypervolume_" + regionName + ".png")
     plt.show()
-    pass
 
 plot_design_objective_space(res_amazon, "amazon")
 plot_landuse_configuration(res_amazon, "amazon")

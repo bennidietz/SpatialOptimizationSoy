@@ -23,8 +23,8 @@ class SpatialOnePointCrossover(Crossover):
         for _ in range(n_matings):
 
             # create patch map and genome with CoMOLA functions 
-            patches_parent1, genome_parent1 = compute_genome.create_patch_ID_map(X[0][_],0,[8,9],"True")
-            patches_parent2, genome_parent2 = compute_genome.create_patch_ID_map(X[1][_],0,[8,9],"True")
+            patches_parent1, genome_parent1 = compute_genome.create_patch_ID_map(X[0][_],0,[3,4],"False")
+            patches_parent2, genome_parent2 = compute_genome.create_patch_ID_map(X[1][_],0,[3,4],"False")
                         
             # define number of cuts
             num_crossover_points = self.n_points

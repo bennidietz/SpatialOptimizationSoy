@@ -7,7 +7,7 @@ def random_reset_mutation(genome_in, point_mutation_prob):
     genome = list(genome_in)
     for i in range(1, len(genome)):
         if np.random.uniform(0, 1) < point_mutation_prob:
-            genome[i] = np.random.randint(low=3,high=8) 
+            genome[i] = np.random.randint(low=1,high=3) 
     return (genome)
 
 
@@ -28,7 +28,8 @@ class SpatialNPointMutation(Mutation):
         for i in X:
             # performe mutation with certain probability
             if np.random.uniform(0, 1) < self.prob: # get genome
-                patches, genome = compute_genome.create_patch_ID_map(i, 0, [8, 9], "True")
+                patches, genome = compute_genome.create_patch_ID_map(i, 0, [2,3], "False") 
+                # 8 and 9: the land use indices excluded from the optimization
                 # perform mutation
                 mutated_genome = random_reset_mutation(genome,
                                 self.point_mutation_probability)
