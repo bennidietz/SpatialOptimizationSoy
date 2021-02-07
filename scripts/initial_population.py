@@ -1,6 +1,6 @@
 import numpy as np
 import os, settings, debugger_helper
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
 default_directory = os.path.dirname(os.path.realpath(__file__))
@@ -19,7 +19,7 @@ def initialize_spatial(pop_size, landuse_map_path):
         random_map = np.random.uniform(0.0,1.0,(rows,cols))
         random_map_mw = np.zeros((rows,cols))
 
-        print("Interation " + str(i) + ":")
+        print("Iteration " + str(i) + ":")
         print("Initial state: " + str(debugger_helper.getOccurancies(landuse_map_ini)))
         print("Initial state landuse map : " + str(debugger_helper.getOccurancies(landuse_map_in)))
 
@@ -32,7 +32,7 @@ def initialize_spatial(pop_size, landuse_map_path):
                     random_map_mw[y,x] = random_map[y-1:y+2,x-1:x+2].mean()
 
         # 70% of the map remains the current land use
-        landuse_map_ini = np.where(random_map_mw>=0.3, 
+        landuse_map_ini = np.where(random_map_mw>=0.3,
                             landuse_map_in,landuse_map_ini)
         print("After letting 70% of cells remain : " + str(debugger_helper.getOccurancies(landuse_map_ini)))
         # 30% of the map will become new
@@ -47,7 +47,7 @@ def initialize_spatial(pop_size, landuse_map_path):
                         np.random.randint(low=1, high=3,size=(rows,cols)),
                         landuse_map_ini)
         print("After transfer others on 1 and 2: " + str(debugger_helper.getOccurancies(landuse_map_ini)))
-        all_landusemaps.append(landuse_map_ini) 
+        all_landusemaps.append(landuse_map_ini)
     return np.array(all_landusemaps)
 
 '''maps = initialize_spatial(3, settings.get_file_reclass_amazon_npy())
