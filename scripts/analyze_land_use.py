@@ -49,6 +49,22 @@ def compare_land_use(mapA, mapB):
 
     return output
 
+def print_land_use_change(map):
+    cmap = ListedColormap(["#b3cc33", "#10773e", "#999999", "#777777"])
+    legend_landuse = [
+            mpatches.Patch(color="#b3cc33", label = 'Changed from not soy to soy'),
+            mpatches.Patch(color="#10773e", label = 'Changed from soy to not soy'),
+            mpatches.Patch(color="#999999", label = 'Did not change'),
+            mpatches.Patch(color="#777777", label = 'Could not change'),
+    ]
+
+    im = plt.imshow(map, interpolation = 'none', cmap = cmap, vmin = 0.5, vmax = 4.5)
+
+    plt.colorbar(im, orientation = 'horizontal')
+    plt.suptitle('Land use change')
+    plt.legend(handles=legend_landuse, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.show()
+
 def analyze_land_use_change(area, pop_size):
     if area == 'amazon':
         initial_map = np.load(settings.get_file_reclass_amazon_npy())
@@ -60,6 +76,9 @@ def analyze_land_use_change(area, pop_size):
     i = 1
 
     for map in maps:
+        #shorter but no nice labelling
+        #print_land_use_change(compare_land_use(initial_map, map))
+
         cmap = ListedColormap(["#b3cc33", "#10773e", "#999999", "#777777"])
         legend_landuse = [
                 mpatches.Patch(color="#b3cc33", label = 'Changed from not soy to soy'),
@@ -74,7 +93,7 @@ def analyze_land_use_change(area, pop_size):
         plt.suptitle('Land use change ' + area + ' (population size: ' + str(i) + ')')
         plt.legend(handles=legend_landuse, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         plt.show()
-
+        
         i += 1
 
 #analyze_land_use_configuration('amazon', 3)
