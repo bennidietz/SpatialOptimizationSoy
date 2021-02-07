@@ -71,7 +71,7 @@ def print_land_use_change(map, title = 'Land use change'):
 
     im = plt.imshow(map, interpolation = 'none', cmap = cmap, vmin = 0.5, vmax = 5.5)
 
-    plt.suptitle('Land use change')
+    plt.suptitle(title)
     plt.legend(handles = legend_landuse, bbox_to_anchor = (1.05, 1), loc = 2, borderaxespad = 0.)
     plt.show()
 
