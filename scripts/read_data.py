@@ -46,7 +46,7 @@ if os.path.isfile(settings.get_file_landuse()):
 
         # plot reclassified landuse map
         f2, ax2 = plt.subplots(1)
-        cmap2 = ListedColormap(["#b3cc33","#10773e","#be94e8","#1b5ee4","#000000"])
+        cmap2 = ListedColormap(["#b3cc33","#10773e","#000000","#1b5ee4","#be94e8"])
         legend_landuse2 = [
                 mpatches.Patch(color="#b3cc33",label = 'Soy'),
                 mpatches.Patch(color="#10773e",label = 'Not soy'),
@@ -85,23 +85,25 @@ if os.path.isfile(settings.get_file_landuse()):
         print(debugger_helper.getOccurancies(landuse_reclass))
 
         im1 = plt.imshow(landuse_original, interpolation='none',
-        cmap=cmap2, vmin = 0.5, vmax = 15.5)
-        ax2.set_title('Landuse map reclassified')
+        cmap=cmap2, vmin = 0.5, vmax = 5.5)
+        ax2.set_title('Cerrado crop: Landuse map reclassified')
         ax2.set_xlabel('Column #')
         ax2.set_ylabel('Row #')
-        ax2.legend(handles=legend_landuse3, bbox_to_anchor=(1.05,1), loc=2,
+        ax2.legend(handles=legend_landuse2, bbox_to_anchor=(1.05,1), loc=2,
             borderaxespad=0.)
         plt.imsave(settings.get_file_landuse_reclass(), landuse_reclass, format = "tiff", cmap = cmap2)
 
         amazon_crop = landuse_reclass[1300:1700, 2750:3150] # 400 x 400
-        plt.imsave(settings.get_file_reclass_amazon_tif(), amazon_crop, format='tiff', cmap=cmap3)
+        plt.imsave(settings.get_file_reclass_amazon_tif(), amazon_crop, format='tiff', cmap=cmap2)
+        cerrado_crop = landuse_reclass[3700:4100, 4000:4400] # 400 x 400
+        im1 = plt.imshow(cerrado_crop, interpolation='none', cmap=cmap2, vmin = 0.5, vmax = 4.5)
         settings.printFileCreated(settings.get_file_reclass_amazon_tif())
         np.save(settings.get_file_reclass_amazon_npy(), amazon_crop)
         print(debugger_helper.getOccurancies(amazon_crop))
         settings.printFileCreated(settings.get_file_reclass_amazon_npy())
 
-        cerrado_crop = landuse_reclass[3700:4100, 4000:4400] # 400 x 400
-        plt.imsave(settings.get_file_reclass_cerrado_tif(), cerrado_crop, format='tiff', cmap=cmap3)
+        
+        plt.imsave(settings.get_file_reclass_cerrado_tif(), cerrado_crop, format='tiff', cmap=cmap2)
         settings.printFileCreated(settings.get_file_reclass_cerrado_tif())
         np.save(settings.get_file_reclass_cerrado_npy(), cerrado_crop)
         print(debugger_helper.getOccurancies(cerrado_crop))
@@ -158,4 +160,4 @@ with open(default_directory + "/data/Objectives/pasture_potential_yield_example.
     pickle.dump(pasture_pot_yield, output, pickle.HIGHEST_PROTOCOL)
 
 plt.imshow(default_directory + "/data/Objectives/soy_potential_yield_example.pkl",interpolation='none',
-    cmap=cmap2, vmin = 0.5, vmax = 10.5) '''
+    cmap=cmap2, vmin = 0.5, vmax = 4.5) '''
