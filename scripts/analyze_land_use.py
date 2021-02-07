@@ -3,6 +3,7 @@ import numpy as np
 import os, settings, debugger_helper
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
+import matplotlib.patches as mpatches
 
 def analyze_land_use_configuration(area, pop_size):
     if area == 'amazon':
@@ -10,12 +11,15 @@ def analyze_land_use_configuration(area, pop_size):
     else:
         maps = initial_population.initialize_spatial(pop_size, settings.get_file_reclass_cerrado_npy())
 
-    f, axes = plt.subplots(1, 3)
+    f, axes = plt.subplots(1, len(maps))
 
     cmap = ListedColormap(["#b3cc33", "#10773e", "#be94e8", "#1b5ee4"])
 
-    for amap, ax in zip(maps, axes):
-        im = ax.imshow(amap, interpolation = 'none', cmap = cmap, vmin = 0.5, vmax = 4.5)
+    if len(maps) > 1:
+        for amap, ax in zip(maps, axes):
+            im = ax.imshow(amap, interpolation = 'none', cmap = cmap, vmin = 0.5, vmax = 4.5)
+    else:
+        im = axes.imshow(maps[0], interpolation = 'none', cmap = cmap, vmin = 0.5, vmax = 4.5)
 
     plt.colorbar(im, orientation = 'horizontal')
     plt.suptitle('Land use configuration ' + area + ' (population size: ' + str(pop_size) + ')')
@@ -57,11 +61,18 @@ def analyze_land_use_change(area, pop_size):
 
     for map in maps:
         cmap = ListedColormap(["#b3cc33", "#10773e", "#999999", "#777777"])
+        legend_landuse = [
+                mpatches.Patch(color="#b3cc33", label = 'Changed from not soy to soy'),
+                mpatches.Patch(color="#10773e", label = 'Changed from soy to not soy'),
+                mpatches.Patch(color="#999999", label = 'Did not change'),
+                mpatches.Patch(color="#777777", label = 'Could not change'),
+        ]
 
         im = plt.imshow(compare_land_use(initial_map, map), interpolation = 'none', cmap = cmap, vmin = 0.5, vmax = 4.5)
 
         plt.colorbar(im, orientation = 'horizontal')
         plt.suptitle('Land use change ' + area + ' (population size: ' + str(i) + ')')
+        plt.legend(handles=legend_landuse, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         plt.show()
 
         i += 1
