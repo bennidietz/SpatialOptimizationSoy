@@ -1,5 +1,6 @@
 import initial_population
 import numpy as np
+import collections
 import os, settings, debugger_helper
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
@@ -25,7 +26,7 @@ def analyze_land_use_configuration(area, pop_size):
     plt.suptitle('Land use configuration ' + area + ' (population size: ' + str(pop_size) + ')')
     plt.show()
 
-def compare_land_use(mapA, mapB):
+def compare_land_use(mapA, mapB, printResults = False):
 
     if mapA.shape != mapB.shape:
         return []
@@ -56,6 +57,10 @@ def compare_land_use(mapA, mapB):
 
             #algorithm failure
             output[i][k] = 5
+
+    if printResults:
+        unique, counts = np.unique(output, return_counts = True)
+        print(dict(zip(unique, counts)))
 
     return output
 
@@ -93,5 +98,5 @@ def analyze_land_use_change(area, pop_size):
 #analyze_land_use_configuration('amazon', 3)
 #analyze_land_use_configuration('cerrado', 3)
 
-#analyze_land_use_change('amazon', 1)
+analyze_land_use_change('amazon', 1)
 #analyze_land_use_change('cerrado', 1)
