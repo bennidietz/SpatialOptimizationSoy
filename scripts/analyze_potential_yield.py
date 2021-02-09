@@ -1,5 +1,3 @@
-#only works in python 3.7
-
 import initial_population
 import numpy as np
 #import pickle5 as pickle
