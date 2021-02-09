@@ -44,6 +44,15 @@ bounding_box_amazon_lon_bounds = [-56.458405, -55.70084]
 bounding_box_cerrado_lat_bounds = [-15.01504, -14.25748]
 bounding_box_cerrado_lon_bounds = [-54.09101, -53.33345]
 
+#output visualizations
+
+#500gen results
+directory_500gen = default_directory + '/../Results500gen'
+amazon_landuse_result_500gen = "landuse_amazon_500gen.npy"
+cerrado_landuse_result_500gen = "landuse_cerrado_500gen.npy"
+amazon_objectives_result_500gen = "objectives_amazon_500gen.npy"
+cerrado_objectives_result_500gen = "objectives_cerrado_500gen.npy"
+
 #return functions
 
 def get_default_directory(): return default_directory
@@ -73,6 +82,10 @@ def get_bounding_box_amazon_lat_bounds(): return bounding_box_amazon_lat_bounds
 def get_bounding_box_amazon_lon_bounds(): return bounding_box_amazon_lon_bounds
 def get_bounding_box_cerrado_lat_bounds(): return bounding_box_amazon_lat_bounds
 def get_bounding_box_cerrado_lon_bounds(): return bounding_box_cerrado_lon_bounds
+def get_file_amazon_landuse_results_500gen(): return directory_500gen + "/" + amazon_landuse_result_500gen
+def get_file_cerrado_landuse_results_500gen(): return directory_500gen + "/" + cerrado_landuse_result_500gen
+def get_file_amazon_objectives_results_500gen(): return directory_500gen + "/" + amazon_objectives_result_500gen
+def get_file_cerrado_objectives_results_500gen(): return directory_500gen + "/" + cerrado_objectives_result_500gen
 
 #other default functions
 

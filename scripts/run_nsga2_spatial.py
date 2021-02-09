@@ -3,6 +3,7 @@ from pymoo.model.crossover import Crossover
 import spatial_extention_pymoo
 import settings
 import matplotlib.patches as mpatches
+from analyze_land_use import compare_land_use, print_land_use_change
 
 # add spatial functions to pymoo library
 factory.get_sampling_options = spatial_extention_pymoo._new_get_sampling_options
@@ -45,19 +46,20 @@ class MyProblem(Problem):
                          xu=1.0)
 
 
-    # define the objective functions
     def _evaluate(self, X, out, *args, **kwargs):
         f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area) # soy yield will be maximized
         f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area) # water footprint will be minizied
-
-        # soy yield should be above 76154 / 2 = 38077 Tonnes
-        g1 =  -f2+self.current_soy_yield/2
-        # soy yield should be below 76154 * 2 = 152308 Tonnes
-        #g2 =  objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)-self.current_soy_yield*2
+        
+        g1 =  -f2+self.current_soy_yield/2 # constraint 1: soy yield should not be less than its current half
+        
         out["F"] = np.column_stack([f1, f2])
         out["G"] = np.column_stack([g1])
 
+    # soy yield should be above 76154 / 2 = 38077 Tonnes
+
 #algorithm
+# soy yield should be below 76154 * 2 = 152308 Tonnes
+#g2 =  objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area)-self.current_soy_yield*2
 
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.factory import get_sampling, get_crossover, get_mutation
@@ -66,7 +68,7 @@ algorithm_amazon = NSGA2(
     pop_size=70,
     n_offsprings=10,
     sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_amazon_npy()),
-    crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
+    crossover=get_crossover("spatial_one_point_crossover", n_points = 30),
     mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
     point_mutation_probability = 0.015),
     eliminate_duplicates=False
@@ -76,7 +78,7 @@ algorithm_cerrado = NSGA2(
     pop_size=70,
     n_offsprings=10,
     sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_cerrado_npy()),
-    crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
+    crossover=get_crossover("spatial_one_point_crossover", n_points = 30),
     mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
     point_mutation_probability = 0.015),
     eliminate_duplicates=False
@@ -86,7 +88,7 @@ algorithm_cerrado = NSGA2(
 
 from pymoo.factory import get_termination
 
-termination = get_termination("n_gen", 10)
+termination = get_termination("n_gen", 5)
 
 #optimization
 from pymoo.optimize import minimize
@@ -105,34 +107,34 @@ res_cerrado = minimize(MyProblem(578897.6),
     verbose=True)
 
 
-def plot_objective_space(minimizationResults):
+def plot_objective_space(minimizationResults, regionName, unit_wf):
     f1, ax1 = plt.subplots(1)
     im1 = plt.scatter(-minimizationResults.F[:,0], minimizationResults.F[:,1])
-    ax1.set_title("Objective Space")
+    ax1.set_title(regionName + ": Objective Space")
     ax1.set_xlabel('Total yield [tonnes]')
-    ax1.set_ylabel('Water footprint [m^3/Tonnes]')
+    ax1.set_ylabel('Water footprint ' + unit_wf)
     plt.show()
 
 #plot_objective_space(res_cerrado)
 
 #visualization
 
-def plot_design_objective_space(res, name):
+def plot_design_objective_space(res, name, unit_wf):
     # Plot the design space
     f1, ax1 = plt.subplots(1)
     ax1.scatter(-res.X[:,0], res.X[:,1], s=30, fc='none', ec='r')
-    ax1.set_title('design space')
+    ax1.set_title(name + ': design space')
     ax1.set_xlabel('x1')
     ax1.set_ylabel('x2')
     ax1.set_xlim(-5, 0)
-    ax1.set_ylim(0, 7)
-    f1.savefig('design_space_' + name + '.png')
+    ax1.set_ylim(-7, 7)
+    f1.savefig(name + ': design_space_' + name + '.png')
     # Plot the objective space
     f2, ax2 = plt.subplots(1)
     ax2.scatter(-res.F[:,0], res.F[:,1], s=30, fc='none', ec='k')
-    ax2.set_title('objective space')
-    ax2.set_xlabel('f1')
-    ax2.set_ylabel('f2')
+    ax2.set_title(name + ': objective space')
+    ax2.set_xlabel('Soy yield [tonnes]')
+    ax2.set_ylabel('Water footprint ' + unit_wf)
     f2.savefig('objective_space_' + name + '.png')
 
 def plot_landuse_configuration(minimizationResults, regionName):
@@ -200,7 +202,7 @@ def plot_config_alternative_colors(minimizationResults, regionName):
     plt.show()
 
 
-def objectives_per_generation(res, regionName):
+def objectives_per_generation(res, regionName, unit_wf):
     '''
     plot objective values over generation and pareto front
     '''
@@ -226,26 +228,28 @@ def objectives_per_generation(res, regionName):
 
     # visualize the maxima against the generation number
     f3, (ax3a, ax3b) = plt.subplots(1,2, figsize=(9,5))
+    ax3a.set_title(regionName + ': Objectives over generation', fontsize=10)
     ax3a.plot(n_gen, -np.array(obj_1))
     ax3a.set_xlabel("Generation")
     ax3a.set_ylabel("Maximum total yield [tonnes]")
     ax3b.plot(n_gen, np.array(obj_2))
     ax3b.set_xlabel("Generation")
-    ax3b.set_ylabel("Water footprint [tonnes]")
+    ax3b.set_ylabel("Water footprint " + unit_wf)
     plt.savefig(settings.get_default_directory() + "/objectives_over_generations_" + regionName)
     plt.show()
 
     # add here the generations you want to see in the plot
-    generations2plot = [1,2,3]
     #generations2plot = [10,20,30,40,50]
+    generations2plot = [50,100,200,300,400,500]
 
     # make the plot
     fig4, ax4 = plt.subplots(1)
     # i - 1, because generation 1 has index 0
     for i in generations2plot:
         plt.scatter(-f[i-1][:,0],f[i-1][:,1])
+    ax4.set_title(regionName + ': Parteto front for generations', fontsize=10)
     ax4.set_xlabel('Total yield [tonnes]')
-    ax4.set_ylabel('Water footprint [tonnes]')
+    ax4.set_ylabel('Water footprint ' + unit_wf)
     plt.legend(list(map(str, generations2plot)))
     plt.savefig(settings.get_default_directory() + "/pareto_front_over_generations_" + regionName + ".png")
     plt.show()
@@ -261,15 +265,33 @@ def objectives_per_generation(res, regionName):
     hv = [metric.calc(i) for i in f]
     # visualze the convergence curve
     fig5, ax5 = plt.subplots(1)
+    ax5.set_title(regionName + ': Hypervolume for genrations', fontsize=10)
     ax5.plot(n_gen, hv, '-o', markersize=4, linewidth=2)
     ax5.set_xlabel("Generation")
     ax5.set_ylabel("Hypervolume")
     plt.savefig(settings.get_default_directory() + "/hypervolume_" + regionName + ".png")
     plt.show()
 
-plot_design_objective_space(res_amazon, "amazon")
-plot_landuse_configuration(res_amazon, "amazon")
-#plot_landuse_configuration(res_cerrado, "cerrado")
-objectives_per_generation(res_amazon, "amazon")
-#objectives_per_generation(res_cerrado, "cerrado")
+baseAmazonLanduse =  np.load(settings.get_file_reclass_amazon_npy())
+baseCerradoLanduse = np.load(settings.get_file_reclass_cerrado_npy())
+soyYieldAmazon = res_amazon.X[np.argmax(-res_amazon.F[:,0], axis=0)]
+waterfootprintAmazon = res_amazon.X[np.argmax(res_amazon.F[:,1], axis=0)]
+soyYieldCerrado = res_cerrado.X[np.argmax(-res_cerrado.F[:,0], axis=0)]
+waterfootprintCerrado = res_cerrado.X[np.argmax(res_cerrado.F[:,1], axis=0)]
+
+print_land_use_change(compare_land_use(baseAmazonLanduse, soyYieldAmazon), "Amazon: Land use change")
+print_land_use_change(compare_land_use(baseCerradoLanduse, soyYieldCerrado), "Cerrado: Land use change")
+
+plot_design_objective_space(res_amazon, "Amazon", "[Tonnes]")
+plot_design_objective_space(res_cerrado, "Cerrado", "[Tonnes]")
+
+plot_landuse_configuration(res_amazon, "Amazon")
+plot_landuse_configuration(res_cerrado, "cerrado")
+
+plot_config_alternative_colors(res_amazon, "Amazon")
+plot_config_alternative_colors(res_cerrado, "cerrado")
+
+objectives_per_generation(res_amazon, "Amazon", "[Tonnes]")
+objectives_per_generation(res_cerrado, "Cerrado", "[Tonnes]")
+
 print("1")

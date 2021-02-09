@@ -24,13 +24,10 @@ class SpatialNPointMutation(Mutation):
         cols = shape_landusemaps[1]
         offspring = []
 
-        # loop over individuals in population
         for i in X:
-            # performe mutation with certain probability
-            if np.random.uniform(0, 1) < self.prob: # get genome
-                patches, genome = compute_genome.create_patch_ID_map(i, 0, [2,3], "False") 
-                # 8 and 9: the land use indices excluded from the optimization
-                # perform mutation
+            if np.random.uniform(0, 1) < self.prob:
+                # leave out water water & urban area for optimization
+                patches, genome = compute_genome.create_patch_ID_map(i, 0, [3,4], "False") 
                 mutated_genome = random_reset_mutation(genome,
                                 self.point_mutation_probability)
 
