@@ -37,8 +37,10 @@ temp_cerrado = np.load(settings.get_file_temp_cerrado_interpolated())
 
 class MyProblem(Problem):
 
-    def __init__(self, current_soy_yield):
+    def __init__(self, current_soy_yield, potSoyYieldData, precData):
         self.current_soy_yield = current_soy_yield
+        self.potSoyYield = np.load(potSoyYieldData, allow_pickle=True)
+        self.precipitation = np.load(precData)
         super().__init__(n_var=400,
                          n_obj=2,
                          n_constr=1,
@@ -47,10 +49,10 @@ class MyProblem(Problem):
 
 
     def _evaluate(self, X, out, *args, **kwargs):
-        f1 = -objectives.calc_soy_yield(X[:], soy_pot_yield, cell_area) # soy yield will be maximized
-        f2 = objectives.calculate_water_footprint(X[:],soy_pot_yield, prec_amazon, cell_area) # water footprint will be minizied
+        f1 = -objectives.calc_soy_yield(X[:], self.potSoyYield, cell_area) # soy yield will be maximized
+        f2 = objectives.calculate_water_footprint(X[:], self.potSoyYield, self.precipitation, cell_area) # water footprint will be minizied
         
-        g1 =  -f2+self.current_soy_yield/2 # constraint 1: soy yield should not be less than its current half
+        g1 =  f1+self.current_soy_yield/2 # constraint 1: soy yield should not be less than its current half
         
         out["F"] = np.column_stack([f1, f2])
         out["G"] = np.column_stack([g1])
@@ -67,18 +69,25 @@ from pymoo.factory import get_sampling, get_crossover, get_mutation
 algorithm_amazon = NSGA2(
     pop_size=70,
     n_offsprings=10,
-    sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_amazon_npy()),
-    crossover=get_crossover("spatial_one_point_crossover", n_points = 30),
-    mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
-    point_mutation_probability = 0.015),
+    sampling=
+        get_sampling(
+            "spatial", 
+            landuseData=settings.get_file_reclass_amazon_npy()
+        ),
+    crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
+    mutation=get_mutation("spatial_n_point_mutation", prob = 0.01, point_mutation_probability = 0.015),
     eliminate_duplicates=False
 )
 
 algorithm_cerrado = NSGA2(
     pop_size=70,
     n_offsprings=10,
-    sampling=get_sampling("spatial", landuseData=settings.get_file_reclass_cerrado_npy()),
-    crossover=get_crossover("spatial_one_point_crossover", n_points = 30),
+    sampling=
+        get_sampling(
+            "spatial",
+            landuseData=settings.get_file_reclass_cerrado_npy()
+        ),
+    crossover=get_crossover("spatial_one_point_crossover", n_points = 3),
     mutation=get_mutation("spatial_n_point_mutation", prob = 0.01,
     point_mutation_probability = 0.015),
     eliminate_duplicates=False
@@ -92,14 +101,24 @@ termination = get_termination("n_gen", 5)
 
 #optimization
 from pymoo.optimize import minimize
-res_amazon = minimize(MyProblem(76154.6),
+res_amazon = minimize(
+    MyProblem(
+        76154.6,
+        settings.get_file_soy_amazon(),
+        settings.get_file_prec_amazon_interpolated()
+    ),
     algorithm_amazon,
     termination,
     seed=1,
     save_history=True,
     verbose=True)
 
-res_cerrado = minimize(MyProblem(578897.6),
+res_cerrado = minimize(
+    MyProblem(
+        578897.6,
+        settings.get_file_soy_cerrado(),
+        settings.get_file_prec_cerrado_interpolated()
+    ),
     algorithm_cerrado,
     termination,
     seed=1,
@@ -111,7 +130,7 @@ def plot_objective_space(minimizationResults, regionName, unit_wf):
     f1, ax1 = plt.subplots(1)
     im1 = plt.scatter(-minimizationResults.F[:,0], minimizationResults.F[:,1])
     ax1.set_title(regionName + ": Objective Space")
-    ax1.set_xlabel('Total yield [tonnes]')
+    ax1.set_xlabel('soy yield [tonnes]')
     ax1.set_ylabel('Water footprint ' + unit_wf)
     plt.show()
 
@@ -150,20 +169,18 @@ def plot_landuse_configuration(minimizationResults, regionName):
     ]
     # fetch the two extremes of the Pareto front from res.X
     landuse_max_yield = minimizationResults.X[np.argmax(-minimizationResults.F[:,0], axis=0)]
-    landuse_min_waterfootprint = minimizationResults.X[np.argmax(minimizationResults.F[:,1], axis=0)]
+    landuse_min_waterfootprint = minimizationResults.X[np.argmax(-minimizationResults.F[:,1], axis=0)]
     # Plot them next to each other
     f2, (ax2a, ax2b) = plt.subplots(1,2, figsize=(9,5))
     im2a = ax2a.imshow(landuse_max_yield,interpolation='None',
     cmap=cmap,vmin=0.5,vmax=4.5)
-    ax2a.set_title(regionName + ': Landuse map \nmaximized total yield', fontsize=10)
+    ax2a.set_title(regionName + ': Landuse map \nmaximized soy yield', fontsize=10)
     ax2a.set_xlabel('Column #')
     ax2a.set_ylabel('Row #')
-    im2b = ax2b.imshow(landuse_min_waterfootprint,interpolation='None',
-    cmap=cmap,vmin=0.5,vmax=4.5)
+    im2b = ax2b.imshow(landuse_min_waterfootprint,interpolation='None',cmap=cmap,vmin=0.5,vmax=4.5)
     ax2b.set_title(regionName + ': Landuse map \nminimized water footprint', fontsize=10)
     ax2b.set_xlabel('Column #')
-    plt.legend(handles=legend_landuse,bbox_to_anchor=(1.05, 1), loc=2,
-    prop={'size': 9})
+    plt.legend(handles=legend_landuse,bbox_to_anchor=(1.05, 1), loc=2,prop={'size': 9})
     # Adjust location of the plots to make space for legend and save
     plt.subplots_adjust(right = 0.6, hspace=0.2)
     plt.savefig(settings.get_default_directory()+"/landuse_max_" + regionName + ".png",dpi=150)
@@ -182,12 +199,12 @@ def plot_config_alternative_colors(minimizationResults, regionName):
     ]
     # fetch the two extremes of the Pareto front from res.X
     landuse_max_yield = minimizationResults.X[np.argmax(-minimizationResults.F[:,0], axis=0)]
-    landuse_min_waterfootprint = minimizationResults.X[np.argmax(minimizationResults.F[:,1], axis=0)]
+    landuse_min_waterfootprint = minimizationResults.X[np.argmax(-minimizationResults.F[:,1], axis=0)]
     # Plot them next to each other
     f2, (ax2a, ax2b) = plt.subplots(1,2, figsize=(9,5))
     im2a = ax2a.imshow(landuse_max_yield,interpolation='None',
     cmap=cmap,vmin=0.5,vmax=4.5)
-    ax2a.set_title(regionName + ': Landuse map \nmaximized total yield', fontsize=10)
+    ax2a.set_title(regionName + ': Landuse map \nmaximized soy yield', fontsize=10)
     ax2a.set_xlabel('Column #')
     ax2a.set_ylabel('Row #')
     im2b = ax2b.imshow(landuse_min_waterfootprint,interpolation='None',
@@ -231,7 +248,7 @@ def objectives_per_generation(res, regionName, unit_wf):
     ax3a.set_title(regionName + ': Objectives over generation', fontsize=10)
     ax3a.plot(n_gen, -np.array(obj_1))
     ax3a.set_xlabel("Generation")
-    ax3a.set_ylabel("Maximum total yield [tonnes]")
+    ax3a.set_ylabel("Maximum soy yield [tonnes]")
     ax3b.plot(n_gen, np.array(obj_2))
     ax3b.set_xlabel("Generation")
     ax3b.set_ylabel("Water footprint " + unit_wf)
@@ -248,7 +265,7 @@ def objectives_per_generation(res, regionName, unit_wf):
     for i in generations2plot:
         plt.scatter(-f[i-1][:,0],f[i-1][:,1])
     ax4.set_title(regionName + ': Parteto front for generations', fontsize=10)
-    ax4.set_xlabel('Total yield [tonnes]')
+    ax4.set_xlabel('soy yield [tonnes]')
     ax4.set_ylabel('Water footprint ' + unit_wf)
     plt.legend(list(map(str, generations2plot)))
     plt.savefig(settings.get_default_directory() + "/pareto_front_over_generations_" + regionName + ".png")
