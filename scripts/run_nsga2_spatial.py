@@ -292,21 +292,27 @@ def objectives_per_generation(res, regionName, unit_wf):
 baseAmazonLanduse =  np.load(settings.get_file_reclass_amazon_npy())
 baseCerradoLanduse = np.load(settings.get_file_reclass_cerrado_npy())
 soyYieldAmazon = res_amazon.X[np.argmax(-res_amazon.F[:,0], axis=0)]
-waterfootprintAmazon = res_amazon.X[np.argmax(res_amazon.F[:,1], axis=0)]
+waterfootprintAmazon = res_amazon.X[np.argmax(-res_amazon.F[:,1], axis=0)]
 soyYieldCerrado = res_cerrado.X[np.argmax(-res_cerrado.F[:,0], axis=0)]
-waterfootprintCerrado = res_cerrado.X[np.argmax(res_cerrado.F[:,1], axis=0)]
+waterfootprintCerrado = res_cerrado.X[np.argmax(-res_cerrado.F[:,1], axis=0)]
 
-print_land_use_change(compare_land_use(baseAmazonLanduse, soyYieldAmazon), "Amazon: Land use change")
-print_land_use_change(compare_land_use(baseCerradoLanduse, soyYieldCerrado), "Cerrado: Land use change")
+print_land_use_change(compare_land_use(baseAmazonLanduse, soyYieldAmazon, True), 
+    "Amazon: Land use change - maximium soy yield")
+print_land_use_change(compare_land_use(baseAmazonLanduse, waterfootprintAmazon, True), 
+    "Amazon: Land use change - minimum water footrpint")
+print_land_use_change(compare_land_use(baseCerradoLanduse, soyYieldCerrado, True), 
+    "Cerrado: Land use change - maximium soy yield")
+print_land_use_change(compare_land_use(baseCerradoLanduse, waterfootprintCerrado, True), 
+    "Cerrado: Land use change - minimum water footrpint")
 
 plot_design_objective_space(res_amazon, "Amazon", "[Tonnes]")
 plot_design_objective_space(res_cerrado, "Cerrado", "[Tonnes]")
 
 plot_landuse_configuration(res_amazon, "Amazon")
-plot_landuse_configuration(res_cerrado, "cerrado")
+plot_landuse_configuration(res_cerrado, "Cerrado")
 
 plot_config_alternative_colors(res_amazon, "Amazon")
-plot_config_alternative_colors(res_cerrado, "cerrado")
+plot_config_alternative_colors(res_cerrado, "errado")
 
 objectives_per_generation(res_amazon, "Amazon", "[Tonnes]")
 objectives_per_generation(res_cerrado, "Cerrado", "[Tonnes]")
