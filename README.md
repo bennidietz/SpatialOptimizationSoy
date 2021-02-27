@@ -23,3 +23,22 @@ Following files are necessary in the `/data/base`-directory:
 
 ### Results
 Some of the results running the algorithm with 500 generations, 10 offsprings and an initial population of 100 can be seen in the `results`-directory.
+
+#### Optimized land use
+<center> <h5>Investigation area in Cerrado</h5> </center>
+<img src="https://github.com/bennidietz/SpatialOptimizationSoy/blob/main/results/landuse_max_Cerrado.png?raw=true">
+<center> <h5>Investigation area in Amazon</h5> </center>
+<img src="https://github.com/bennidietz/SpatialOptimizationSoy/blob/main/results/landuse_max_amazon.png?raw=true">
+
+### Objective space (pareto front)
+<center> <h5>Investigation area in Cerrado</h5> </center>
+<img src="https://github.com/bennidietz/SpatialOptimizationSoy/blob/main/results/objective_space_Cerrado.png?raw=true">
+<center> <h5>Investigation area in Amazon</h5> </center>
+<img src="https://github.com/bennidietz/SpatialOptimizationSoy/blob/main/results/objective_space_amazon.png?raw=true">
+
+### Change of objectives over generations
+<center> <h5>Investigation area in Cerrado</h5> </center>
+<img src="https://github.com/bennidietz/SpatialOptimizationSoy/blob/main/results/objectives_over_generations_Cerrado.png?raw=true">
+<center> <h5>Investigation area in Amazon</h5> </center>
+<img src="https://github.com/bennidietz/SpatialOptimizationSoy/blob/main/results/objectives_over_generations_amazon.png?raw=true">
+
