@@ -67,7 +67,7 @@ from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 
 algorithm_amazon = NSGA2(
-    pop_size=70,
+    pop_size=100,
     n_offsprings=10,
     sampling=
         get_sampling(
@@ -80,7 +80,7 @@ algorithm_amazon = NSGA2(
 )
 
 algorithm_cerrado = NSGA2(
-    pop_size=70,
+    pop_size=100,
     n_offsprings=10,
     sampling=
         get_sampling(
@@ -97,7 +97,7 @@ algorithm_cerrado = NSGA2(
 
 from pymoo.factory import get_termination
 
-termination = get_termination("n_gen", 5)
+termination = get_termination("n_gen", 500)
 
 #optimization
 from pymoo.optimize import minimize
@@ -299,11 +299,11 @@ waterfootprintCerrado = res_cerrado.X[np.argmax(-res_cerrado.F[:,1], axis=0)]
 print_land_use_change(compare_land_use(baseAmazonLanduse, soyYieldAmazon, True), 
     "Amazon: Land use change - maximium soy yield")
 print_land_use_change(compare_land_use(baseAmazonLanduse, waterfootprintAmazon, True), 
-    "Amazon: Land use change - minimum water footrpint")
+    "Amazon: Land use change - minimum water footprint")
 print_land_use_change(compare_land_use(baseCerradoLanduse, soyYieldCerrado, True), 
     "Cerrado: Land use change - maximium soy yield")
 print_land_use_change(compare_land_use(baseCerradoLanduse, waterfootprintCerrado, True), 
-    "Cerrado: Land use change - minimum water footrpint")
+    "Cerrado: Land use change - minimum water footprint")
 
 plot_design_objective_space(res_amazon, "Amazon", "[Tonnes]")
 plot_design_objective_space(res_cerrado, "Cerrado", "[Tonnes]")
