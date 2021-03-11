@@ -98,5 +98,5 @@ def analyze_land_use_change(area, pop_size):
 #analyze_land_use_configuration('amazon', 3)
 #analyze_land_use_configuration('cerrado', 3)
 
-analyze_land_use_change('amazon', 1)
+#analyze_land_use_change('amazon', 1)
 #analyze_land_use_change('cerrado', 1)
